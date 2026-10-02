@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@progresscut/domain": ["../../packages/domain/src/index.ts"],
+      "@progresscut/contracts": ["../../packages/contracts/src/index.ts"],
+      "@progresscut/engine": ["../../packages/engine/src/index.ts"],
+      "@progresscut/capture": ["../../packages/capture/src/index.ts"],
+      "@progresscut/render": ["../../packages/render/src/index.ts"],
+      "@progresscut/storage": ["../../packages/storage/src/index.ts"],
+      "@progresscut/application": ["../../packages/application/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

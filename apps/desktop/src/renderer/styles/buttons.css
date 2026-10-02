@@ -1,0 +1,57 @@
+.btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 550;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.btn-start {
+  width: 100%;
+  background: var(--violet);
+  color: white;
+  border-color: var(--violet);
+}
+.btn-start:hover {
+  background: var(--violet-deep);
+  border-color: var(--violet-deep);
+}
+.btn-stop,
+.btn-open {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+.btn-stop:hover,
+.btn-open:hover,
+.btn-again:hover {
+  background: #222228;
+  border-color: #454550;
+}
+.btn-again {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.shortcut-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 12px;
+}
+kbd {
+  font: 9px var(--font-ui);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+.shortcut-hint kbd:first-of-type {
+  margin-left: 6px;
+}

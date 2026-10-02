@@ -1,0 +1,97 @@
+<div id="panel-idle" class="panel">
+  <div class="page-heading">
+    <div class="eyebrow">01 / CAPTURE YOUR PROGRESS</div>
+    <h1>Turn progress<br />into <span>stories.</span></h1>
+    <p class="intro">Stay in your flow. Capture the changes.<br />Keep the moments that matter.</p>
+  </div>
+  <div class="setup-grid">
+    <section class="config-section" aria-labelledby="config-title">
+      <div class="section-heading">
+        <h2 id="config-title">Session setup</h2>
+        <span class="micro">CONFIG / 01</span>
+      </div>
+      <div class="source-row">
+        <div class="setting-row">
+          <span class="setting-key">Capture source</span>
+          <span class="micro" id="source-type-label">FULL SCREEN</span>
+        </div>
+        <button id="btn-pick-source" class="source-picker-btn" type="button">
+          <span class="source-icon">▣</span>
+          <span id="source-name">Full screen</span>
+          <span class="source-change micro">select window →</span>
+        </button>
+      </div>
+      <div class="settings">
+        <div class="setting">
+          <div class="setting-row">
+            <label for="slider-interval" class="setting-key">Capture interval</label
+            ><output class="setting-val" id="val-interval" for="slider-interval">5s</output>
+          </div>
+          <p class="setting-note">A snapshot of your screen, every few seconds.</p>
+          <input type="range" id="slider-interval" min="1" max="30" value="5" step="1" />
+          <div class="range-scale"><span>1 sec</span><span>30 sec</span></div>
+        </div>
+        <div class="setting">
+          <div class="setting-row">
+            <label for="slider-target" class="setting-key">Story length</label
+            ><output class="setting-val" id="val-target" for="slider-target">1:00</output>
+          </div>
+          <p class="setting-note">The target duration of your finished story.</p>
+          <input type="range" id="slider-target" min="15" max="300" value="60" step="15" />
+          <div class="range-scale"><span>15 sec</span><span>5 min</span></div>
+        </div>
+        <div class="setting format-setting">
+          <div class="setting-row">
+            <span class="setting-key" id="format-label">Output format</span>
+          </div>
+          <div class="toggle-row" id="fmt-toggle" role="group" aria-labelledby="format-label">
+            <button type="button" class="toggle-opt active" data-fmt="both" aria-pressed="true">
+              MP4 + GIF</button
+            ><button type="button" class="toggle-opt" data-fmt="mp4" aria-pressed="false">
+              MP4</button
+            ><button type="button" class="toggle-opt" data-fmt="gif" aria-pressed="false">
+              GIF
+            </button>
+          </div>
+        </div>
+      </div>
+      <button
+        id="btn-pick-folder"
+        class="output-location"
+        type="button"
+        title="Click to change output folder"
+      >
+        <span class="folder-icon">▱</span>
+        <div class="output-info">
+          <span class="micro" id="output-label">DESKTOP</span>
+          <p id="output-path">progresscut-…</p>
+        </div>
+        <span class="micro output-change">change ↗</span>
+      </button>
+      <button id="btn-start" class="btn btn-start">
+        <span>Start session</span><span aria-hidden="true">↗</span>
+      </button>
+      <div class="shortcut-hint">
+        Start / stop from anywhere <kbd>⌘</kbd><kbd>⇧</kbd><kbd>R</kbd>
+      </div>
+    </section>
+    <section class="brand-canvas" aria-label="ProgressCut brand illustration">
+      <div class="canvas-top"><span>PROGRESS / CUT</span><span>001</span></div>
+      <div class="mark-stage">
+        <div class="construction-circle"></div>
+        <div class="construction-line"></div>
+        <img
+          src="assets/brand-mark.png"
+          alt="ProgressCut: two geometric panels separated by a diagonal cut"
+        />
+      </div>
+      <div class="canvas-caption">
+        <span class="japanese" lang="ja">プログレスカット</span>
+        <p>Many states.<br /><span>One meaningful story.</span></p>
+      </div>
+      <div class="canvas-footer">
+        <span>CAPTURE</span><i>/</i><span>COMPRESS</span><i>/</i><span>SHARE</span>
+      </div>
+    </section>
+  </div>
+</div>

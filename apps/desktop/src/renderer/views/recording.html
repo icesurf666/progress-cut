@@ -1,0 +1,39 @@
+<div id="panel-recording" class="panel hidden">
+  <div class="eyebrow">01 / SESSION IN PROGRESS</div>
+  <div class="state-heading">
+    <h1>Stay in your flow.</h1>
+    <div class="rec-header">
+      <div class="rec-dot"></div>
+      <span class="rec-status">Capturing</span>
+    </div>
+  </div>
+  <p class="intro">Your screen is being captured. Keep building.</p>
+  <div class="timer-section">
+    <div class="micro">SESSION DURATION</div>
+    <div class="big-timer" id="timer">00:00</div>
+    <span class="timer-cut" aria-hidden="true">/</span>
+  </div>
+  <div class="rec-stats">
+    <div class="rec-stat">
+      <div class="rec-stat-val" id="frame-count">0</div>
+      <div class="rec-stat-key">observations</div>
+    </div>
+    <div class="rec-stat">
+      <div class="rec-stat-val" id="segment-count">1</div>
+      <div class="rec-stat-key">segments</div>
+    </div>
+    <div class="rec-stat">
+      <div class="rec-stat-val" id="interval-live">—</div>
+      <div class="rec-stat-key">interval</div>
+    </div>
+  </div>
+  <div class="section-heading">
+    <h2>Capture activity</h2>
+    <span class="micro">LIVE / 32 SAMPLES</span>
+  </div>
+  <div class="activity-bar" id="activity-bar" aria-label="Recent capture activity"></div>
+  <div class="recording-footer">
+    <span class="setting-note">Force a snapshot <kbd>⌘ ⇧ Space</kbd></span
+    ><button id="btn-stop" class="btn btn-stop">Stop &amp; generate <span>↗</span></button>
+  </div>
+</div>

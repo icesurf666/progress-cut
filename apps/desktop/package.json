@@ -1,0 +1,27 @@
+{
+  "name": "@progresscut/desktop",
+  "version": "0.1.0",
+  "description": "Turn long work sessions into short visual progress stories",
+  "author": "ProgressCut",
+  "private": true,
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs && UV_THREADPOOL_SIZE=8 electron .",
+    "pack": "node pack.mjs --dir",
+    "dist": "node pack.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@progresscut/capture": "workspace:*",
+    "@progresscut/domain": "workspace:*",
+    "@progresscut/engine": "workspace:*",
+    "@progresscut/render": "workspace:*",
+    "electron-updater": "^6.3.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "esbuild": "^0.24.0",
+    "sharp": "^0.33.5"
+  }
+}

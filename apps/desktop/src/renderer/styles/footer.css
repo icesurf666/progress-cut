@@ -1,0 +1,13 @@
+.workspace-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 34px;
+  border-top: 1px solid var(--border-subtle);
+  font: 7px var(--font-mono);
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+}
+.workspace-footer i {
+  color: var(--violet-light);
+  margin-left: 10px;
+}

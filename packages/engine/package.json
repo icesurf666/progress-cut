@@ -1,0 +1,16 @@
+{
+  "name": "@progresscut/engine",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@progresscut/domain": "workspace:*",
+    "sharp": "^0.33.5"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

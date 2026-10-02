@@ -1,0 +1,49 @@
+:root {
+  color-scheme: dark;
+  --bg: #09090b;
+  --surface: #111114;
+  --surface-raised: #17171b;
+  --border: #27272e;
+  --border-subtle: #1c1c22;
+  --text: #f4f4f2;
+  --text-secondary: #9a9aa2;
+  --text-dim: #72727e;
+  --violet: #8b5cf6;
+  --violet-light: #c4b5fd;
+  --violet-deep: #6d3ef2;
+  --violet-muted: #2d1f5e;
+  --success: #b7ff5a;
+  --error: #f87171;
+  --font-ui: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'SF Mono', 'Geist Mono', Menlo, monospace;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px var(--font-ui);
+  user-select: none;
+}
+button,
+input {
+  font: inherit;
+  -webkit-app-region: no-drag;
+}
+button {
+  cursor: pointer;
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--violet-light);
+  outline-offset: 5px;
+}
+p,
+h1,
+h2 {
+  margin: 0;
+}

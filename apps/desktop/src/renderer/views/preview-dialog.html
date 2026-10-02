@@ -1,0 +1,23 @@
+<div
+  id="preview-lightbox"
+  class="preview-lightbox hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Preview"
+>
+  <div class="preview-backdrop"></div>
+  <div class="preview-inner">
+    <button id="preview-close" class="preview-close" aria-label="Close preview">✕</button>
+    <div class="preview-media">
+      <img id="preview-img" class="hidden" alt="GIF preview" />
+      <video id="preview-vid" class="hidden" loop autoplay muted playsinline></video>
+    </div>
+    <div class="preview-footer">
+      <span id="preview-label" class="preview-label"></span>
+      <div class="preview-actions">
+        <button id="preview-open" class="preview-btn">Open ↗</button>
+        <button id="preview-copy" class="preview-btn preview-btn--primary">Copy GIF</button>
+      </div>
+    </div>
+  </div>
+</div>

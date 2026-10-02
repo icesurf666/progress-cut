@@ -1,0 +1,131 @@
+.processing-motif {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 40px 0 0;
+  height: 140px;
+  border-top: 1px solid var(--border-subtle);
+}
+.processing-motif span {
+  height: 65px;
+  width: 28px;
+  transform: skewY(-28deg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  animation: proc-pulse 1.6s ease-in-out infinite;
+}
+.processing-motif span:nth-child(1) {
+  animation-delay: 0s;
+}
+.processing-motif span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.processing-motif span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+.processing-motif span:last-child {
+  animation-delay: 0.54s;
+  background: var(--violet);
+  border-color: var(--violet);
+}
+@keyframes proc-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: skewY(-28deg) scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: skewY(-28deg) scaleY(1.15);
+  }
+}
+.processing-motif i {
+  font-size: 75px;
+  font-weight: 200;
+  margin: 0 14px;
+  color: var(--violet-light);
+  animation: proc-slash 2.4s ease-in-out infinite;
+}
+@keyframes proc-slash {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.proc-loader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0 28px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 10px;
+}
+.proc-bar {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.proc-fill {
+  height: 100%;
+  background: var(--violet);
+  border-radius: 2px;
+  animation: proc-indeterminate 1.8s ease-in-out infinite;
+  transform-origin: left;
+}
+@keyframes proc-indeterminate {
+  0% {
+    transform: translateX(-100%) scaleX(0.4);
+  }
+  50% {
+    transform: translateX(60%) scaleX(0.6);
+  }
+  100% {
+    transform: translateX(200%) scaleX(0.4);
+  }
+}
+.proc-status {
+  font: 9px var(--font-mono);
+  color: var(--text-dim);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+.pipeline-item {
+  padding: 19px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.pi-left {
+  min-width: 0;
+  flex: 1;
+}
+.pi-name {
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+.pi-log {
+  font: 10px var(--font-mono);
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pi-status {
+  font: 10px var(--font-mono);
+}
+.pi-status.running {
+  color: var(--violet-light);
+}
+.pi-status.done,
+.complete-label {
+  color: var(--success);
+}
+.pi-status.error {
+  color: var(--error);
+}

@@ -1,0 +1,60 @@
+appId: com.progresscut.app
+productName: ProgressCut
+copyright: Copyright © 2025 ProgressCut
+
+publish:
+  provider: github
+  owner: YOUR_GITHUB_USERNAME
+  repo: progress-cut
+
+directories:
+  output: ../../release
+  buildResources: build
+
+# Only the bundled dist + renderer HTML/CSS/assets
+# Sharp is handled as extraResources (native module needs to stay outside asar)
+files:
+  - dist/**
+  - src/renderer/index.html
+  - src/renderer/styles.css
+  - src/renderer/styles/**
+  - src/renderer/assets/**
+  - package.json
+
+extraResources:
+  - from: ../../node_modules/.pnpm/node_modules/sharp
+    to: app/node_modules/sharp
+    filter: ['**', '!**/node_modules/@img/sharp-*/**/*.node', '!**/.pnpm']
+  - from: ../../node_modules/.pnpm/node_modules/@img
+    to: app/node_modules/@img
+
+asar: true
+asarUnpack:
+  - '**/*.node'
+
+mac:
+  category: public.app-category.developer-tools
+  icon: build/icon.icns
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+
+dmg:
+  title: ProgressCut
+  background: build/dmg-bg.png
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 150
+      y: 185
+      type: file
+    - x: 390
+      y: 185
+      type: link
+      path: /Applications

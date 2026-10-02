@@ -1,0 +1,17 @@
+@import 'styles/tokens.css';
+@import 'styles/sidebar.css';
+@import 'styles/workspace.css';
+@import 'styles/typography.css';
+@import 'styles/settings.css';
+@import 'styles/buttons.css';
+@import 'styles/brand.css';
+@import 'styles/footer.css';
+@import 'styles/recording.css';
+@import 'styles/processing.css';
+@import 'styles/results.css';
+@import 'styles/toast.css';
+@import 'styles/source-dialog.css';
+@import 'styles/source-picker.css';
+@import 'styles/preview-dialog.css';
+@import 'styles/history.css';
+@import 'styles/responsive.css';

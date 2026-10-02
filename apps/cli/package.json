@@ -1,0 +1,20 @@
+{
+  "name": "@progresscut/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "progresscut": "./src/index.ts"
+  },
+  "dependencies": {
+    "@progresscut/capture": "workspace:*",
+    "@progresscut/engine": "workspace:*",
+    "@progresscut/render": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "start": "tsx src/index.ts"
+  }
+}

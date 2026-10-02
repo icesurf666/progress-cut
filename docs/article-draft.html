@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>From 10,000 Frames to 30 Moments — ProgressCut</title>
+<style>
+  :root {
+    --bg:       #0b0b0e;
+    --surface:  #13131a;
+    --surface2: #1a1a24;
+    --border:   #24242f;
+    --violet:   #8b5cf6;
+    --violet2:  #a78bfa;
+    --violet3:  #c4b5fd;
+    --cyan:     #22d3ee;
+    --green:    #4ade80;
+    --amber:    #fbbf24;
+    --red:      #f87171;
+    --text:     #e2e2ec;
+    --text2:    #9090b8;
+    --text3:    #5a5a80;
+    --mono:     'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .article {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 80px 32px 140px;
+  }
+
+  /* ── Header ── */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--violet2);
+    border: 1px solid color-mix(in srgb, var(--violet) 35%, transparent);
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #fff 30%, var(--violet3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 19px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 56px;
+    border-left: 2px solid var(--violet);
+    padding-left: 20px;
+  }
+
+  /* ── Typography ── */
+  h2 {
+    font-size: 26px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    margin: 64px 0 20px;
+    color: #fff;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    font-family: var(--mono);
+    color: var(--violet2);
+    margin: 36px 0 14px;
+    letter-spacing: 0.01em;
+  }
+
+  p { margin-bottom: 20px; color: var(--text); }
+
+  strong { color: #fff; font-weight: 600; }
+
+  a { color: var(--violet2); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--violet) 40%, transparent); }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 56px 0;
+  }
+
+  /* ── Figure wrapper ── */
+  figure {
+    margin: 40px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  figure svg { display: block; width: 100%; }
+
+  figcaption {
+    padding: 12px 20px;
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  /* ── Code block ── */
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 32px 0;
+  }
+
+  .kw  { color: var(--violet2); }
+  .fn  { color: var(--cyan); }
+  .num { color: var(--amber); }
+  .cm  { color: var(--text3); font-style: italic; }
+  .op  { color: var(--text2); }
+  .str { color: var(--green); }
+
+  /* ── Callout ── */
+  .callout {
+    background: color-mix(in srgb, var(--violet) 8%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--violet) 25%, transparent);
+    border-left: 3px solid var(--violet);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 32px 0;
+    font-size: 15.5px;
+    color: var(--text2);
+  }
+
+  .callout strong { color: var(--violet3); }
+
+  /* ── Stats row ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 36px 0;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+    text-align: center;
+  }
+
+  .stat-value {
+    display: block;
+    font-size: 30px;
+    font-weight: 700;
+    font-family: var(--mono);
+    color: var(--violet2);
+    letter-spacing: -0.03em;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Formula block ── */
+  .formula-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    text-align: center;
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+
+  .formula {
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 1.8;
+  }
+
+  .formula sub  { font-size: 14px; vertical-align: sub; }
+  .formula sup  { font-size: 14px; vertical-align: super; }
+  .formula .hl  { color: var(--violet3); }
+  .formula .hl2 { color: var(--cyan); }
+
+  .formula-label {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text3);
+    margin-top: 12px;
+  }
+
+  /* ── GH link ── */
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text2);
+    margin-top: 8px;
+    border-bottom: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .gh-link:hover { border-color: var(--violet); color: var(--violet3); }
+</style>
+</head>
+<body>
+<article class="article">
+
+  <!-- ══════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════ -->
+  <div class="tag">Open Source · Algorithm Deep Dive</div>
+
+  <h1>From 10,000 Frames<br>to 30 Moments</h1>
+
+  <p class="subtitle">
+    A coding session produces thousands of near-identical screenshots.
+    Here is how ProgressCut uses perceptual hashing, SSIM, and temporal
+    segmentation to compress hours of work into a 30-second story —
+    without machine learning, without cloud APIs, fully on your machine.
+  </p>
+
+  <!-- Stats row -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-value">10k+</span>
+      <span class="stat-label">raw frames</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">−89%</span>
+      <span class="stat-label">after dedupe</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">30</span>
+      <span class="stat-label">final moments</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">100%</span>
+      <span class="stat-label">local · no ML</span>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       PIPELINE OVERVIEW
+  ══════════════════════════════════════════════ -->
+  <h2>The pipeline</h2>
+
+  <p>
+    Every second of a recording session produces several frames.
+    After two hours that is anywhere from <strong>8,000 to 14,000 screenshots</strong>.
+    The goal is to reduce that to 30 moments that tell the story of what actually happened.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 740 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#5a5a80"/>
+        </marker>
+      </defs>
+
+      <!-- stage boxes -->
+      <!-- 1: Capture -->
+      <rect x="10"  y="54" width="118" height="80" rx="8" fill="#13131a" stroke="#24242f"/>
+      <text x="69"  y="82"  text-anchor="middle" fill="#8b5cf6" font-family="monospace" font-size="11" font-weight="600">CAPTURE</text>
+      <text x="69"  y="104" text-anchor="middle" fill="#fff"    font-family="monospace" font-size="20" font-weight="700">10,847</text>
+      <text x="69"  y="122" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="10">raw frames</text>
+
+      <!-- arrow 1→2 -->
+      <line x1="128" y1="94" x2="158" y2="94" stroke="#5a5a80" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 2: dHash -->
+      <rect x="158" y="54" width="118" height="80" rx="8" fill="#13131a" stroke="#24242f"/>
+      <text x="217" y="82"  text-anchor="middle" fill="#22d3ee" font-family="monospace" font-size="11" font-weight="600">dHASH</text>
+      <text x="217" y="104" text-anchor="middle" fill="#fff"    font-family="monospace" font-size="20" font-weight="700">1,203</text>
+      <text x="217" y="122" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="10">−89% dupes</text>
+
+      <!-- arrow 2→3 -->
+      <line x1="276" y1="94" x2="306" y2="94" stroke="#5a5a80" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 3: SSIM novelty -->
+      <rect x="306" y="54" width="128" height="80" rx="8" fill="#13131a" stroke="#24242f"/>
+      <text x="370" y="82"  text-anchor="middle" fill="#4ade80" font-family="monospace" font-size="11" font-weight="600">SSIM NOVELTY</text>
+      <text x="370" y="104" text-anchor="middle" fill="#fff"    font-family="monospace" font-size="20" font-weight="700">284</text>
+      <text x="370" y="122" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="10">−77% redundant</text>
+
+      <!-- arrow 3→4 -->
+      <line x1="434" y1="94" x2="464" y2="94" stroke="#5a5a80" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 4: Segments -->
+      <rect x="464" y="54" width="118" height="80" rx="8" fill="#13131a" stroke="#24242f"/>
+      <text x="523" y="82"  text-anchor="middle" fill="#fbbf24" font-family="monospace" font-size="11" font-weight="600">SEGMENTS</text>
+      <text x="523" y="104" text-anchor="middle" fill="#fff"    font-family="monospace" font-size="20" font-weight="700">48</text>
+      <text x="523" y="122" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="10">activity windows</text>
+
+      <!-- arrow 4→5 -->
+      <line x1="582" y1="94" x2="612" y2="94" stroke="#5a5a80" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 5: Output -->
+      <rect x="612" y="42" width="118" height="104" rx="8"
+            fill="color-mix(in srgb,#8b5cf6 12%,#13131a)"
+            stroke="color-mix(in srgb,#8b5cf6 45%,transparent)"/>
+      <text x="671" y="70"  text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="11" font-weight="600">STORY</text>
+      <text x="671" y="100" text-anchor="middle" fill="#fff"    font-family="monospace" font-size="28" font-weight="700">30</text>
+      <text x="671" y="120" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="10">moments</text>
+      <text x="671" y="136" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="10">→ mp4 + gif</text>
+
+      <!-- labels on top -->
+      <text x="69"  y="42" text-anchor="middle" fill="#2d2d40" font-family="monospace" font-size="10">stage 1</text>
+      <text x="217" y="42" text-anchor="middle" fill="#2d2d40" font-family="monospace" font-size="10">stage 2</text>
+      <text x="370" y="42" text-anchor="middle" fill="#2d2d40" font-family="monospace" font-size="10">stage 3</text>
+      <text x="523" y="42" text-anchor="middle" fill="#2d2d40" font-family="monospace" font-size="10">stage 4</text>
+      <text x="671" y="30" text-anchor="middle" fill="#2d2d40" font-family="monospace" font-size="10">output</text>
+    </svg>
+    <figcaption>fig 1 — five-stage pipeline; frame counts from a real 2-hour session</figcaption>
+  </figure>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       STAGE 1: dHASH
+  ══════════════════════════════════════════════ -->
+  <h2>Stage 1 — Deduplication with dHash</h2>
+
+  <p>
+    Most consecutive frames in a coding session are <strong>visually identical</strong> —
+    the cursor blinks, the clock ticks, but the code hasn't changed.
+    Keeping these frames wastes memory and pollutes every downstream step.
+  </p>
+
+  <p>
+    The solution is <strong>difference hashing (dHash)</strong>: a perceptual fingerprint
+    that captures the gradient structure of an image in 64 bits.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 740 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- step 1: source frame (stylised code editor) -->
+      <rect x="20" y="30" width="140" height="96" rx="6" fill="#0f0f18" stroke="#24242f"/>
+      <!-- fake code lines -->
+      <rect x="32" y="44" width="60" height="5" rx="2" fill="#8b5cf6" opacity=".6"/>
+      <rect x="32" y="55" width="90" height="5" rx="2" fill="#22d3ee" opacity=".4"/>
+      <rect x="32" y="66" width="45" height="5" rx="2" fill="#4ade80" opacity=".5"/>
+      <rect x="32" y="77" width="80" height="5" rx="2" fill="#22d3ee" opacity=".3"/>
+      <rect x="32" y="88" width="55" height="5" rx="2" fill="#fbbf24" opacity=".5"/>
+      <rect x="32" y="99" width="70" height="5" rx="2" fill="#8b5cf6" opacity=".4"/>
+      <rect x="32" y="110" width="40" height="5" rx="2" fill="#22d3ee" opacity=".3"/>
+      <text x="90" y="148" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="11">source frame</text>
+      <text x="90" y="162" text-anchor="middle" fill="#9090b8" font-family="monospace" font-size="11">1920×1080</text>
+
+      <!-- arrow 1 -->
+      <line x1="165" y1="78" x2="198" y2="78" stroke="#3a3a55" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="181" y="68" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">resize</text>
+      <text x="181" y="58" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">+greyscale</text>
+
+      <!-- step 2: 9x8 pixel grid -->
+      <g transform="translate(202,30)">
+        <!-- 9 cols × 8 rows = 72 cells, but we show approx values -->
+        <rect width="108" height="96" rx="4" fill="#0f0f18" stroke="#24242f"/>
+        <!-- generate 9x8 grid cells with varying grey values -->
+        <!-- row 0 -->
+        <rect x="4"  y="4"  width="10" height="10" rx="1" fill="#2a2a3a"/>
+        <rect x="16" y="4"  width="10" height="10" rx="1" fill="#383848"/>
+        <rect x="28" y="4"  width="10" height="10" rx="1" fill="#8b5cf6" opacity=".7"/>
+        <rect x="40" y="4"  width="10" height="10" rx="1" fill="#7a4ae0" opacity=".5"/>
+        <rect x="52" y="4"  width="10" height="10" rx="1" fill="#3a3a55"/>
+        <rect x="64" y="4"  width="10" height="10" rx="1" fill="#22d3ee" opacity=".5"/>
+        <rect x="76" y="4"  width="10" height="10" rx="1" fill="#1a9aaa" opacity=".4"/>
+        <rect x="88" y="4"  width="10" height="10" rx="1" fill="#252535"/>
+        <rect x="100" y="4" width="4"  height="10" rx="1" fill="#1e1e2e"/>
+        <!-- row 1 -->
+        <rect x="4"  y="16" width="10" height="10" rx="1" fill="#4ade80" opacity=".5"/>
+        <rect x="16" y="16" width="10" height="10" rx="1" fill="#35b060" opacity=".4"/>
+        <rect x="28" y="16" width="10" height="10" rx="1" fill="#2a2a40"/>
+        <rect x="40" y="16" width="10" height="10" rx="1" fill="#22d3ee" opacity=".3"/>
+        <rect x="52" y="16" width="10" height="10" rx="1" fill="#2d2d45"/>
+        <rect x="64" y="16" width="10" height="10" rx="1" fill="#fbbf24" opacity=".5"/>
+        <rect x="76" y="16" width="10" height="10" rx="1" fill="#c09010" opacity=".4"/>
+        <rect x="88" y="16" width="10" height="10" rx="1" fill="#1e1e2e"/>
+        <rect x="100" y="16" width="4" height="10" rx="1" fill="#2a2a3a"/>
+        <!-- row 2 -->
+        <rect x="4"  y="28" width="10" height="10" rx="1" fill="#2a2a3a"/>
+        <rect x="16" y="28" width="10" height="10" rx="1" fill="#8b5cf6" opacity=".4"/>
+        <rect x="28" y="28" width="10" height="10" rx="1" fill="#9060e0" opacity=".6"/>
+        <rect x="40" y="28" width="10" height="10" rx="1" fill="#22d3ee" opacity=".4"/>
+        <rect x="52" y="28" width="10" height="10" rx="1" fill="#1a9aaa" opacity=".3"/>
+        <rect x="64" y="28" width="10" height="10" rx="1" fill="#2d2d45"/>
+        <rect x="76" y="28" width="10" height="10" rx="1" fill="#383858"/>
+        <rect x="88" y="28" width="10" height="10" rx="1" fill="#4ade80" opacity=".3"/>
+        <rect x="100" y="28" width="4" height="10" rx="1" fill="#1e1e2e"/>
+        <!-- rows 3-7 simplified -->
+        <rect x="4"  y="40" width="100" height="10" rx="1" fill="#1e1e2e"/>
+        <rect x="4"  y="52" width="100" height="10" rx="1" fill="#222230"/>
+        <rect x="4"  y="64" width="100" height="10" rx="1" fill="#1e1e2e"/>
+        <rect x="4"  y="76" width="100" height="10" rx="1" fill="#232338"/>
+        <rect x="4"  y="88" width="100" height="10" rx="1" fill="#1e1e2e"/>
+        <text x="54" y="46" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="9">· · ·</text>
+      </g>
+      <text x="256" y="148" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="11">9 × 8 greyscale</text>
+      <text x="256" y="162" text-anchor="middle" fill="#9090b8" font-family="monospace" font-size="11">72 pixels</text>
+
+      <!-- arrow 2 -->
+      <line x1="315" y1="78" x2="348" y2="78" stroke="#3a3a55" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="331" y="68" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">compare</text>
+      <text x="331" y="58" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">neighbours</text>
+
+      <!-- step 3: bits -->
+      <g transform="translate(350,30)">
+        <rect width="108" height="96" rx="4" fill="#0f0f18" stroke="#24242f"/>
+        <!-- bit grid 8×8 -->
+        <text x="8"  y="20" fill="#4ade80" font-family="monospace" font-size="11" font-weight="700">1</text>
+        <text x="20" y="20" fill="#4ade80" font-family="monospace" font-size="11" font-weight="700">1</text>
+        <text x="32" y="20" fill="#f87171" font-family="monospace" font-size="11" font-weight="700">0</text>
+        <text x="44" y="20" fill="#4ade80" font-family="monospace" font-size="11" font-weight="700">1</text>
+        <text x="56" y="20" fill="#4ade80" font-family="monospace" font-size="11" font-weight="700">1</text>
+        <text x="68" y="20" fill="#f87171" font-family="monospace" font-size="11" font-weight="700">0</text>
+        <text x="80" y="20" fill="#4ade80" font-family="monospace" font-size="11" font-weight="700">1</text>
+        <text x="92" y="20" fill="#f87171" font-family="monospace" font-size="11" font-weight="700">0</text>
+        <!-- rows 2-8 -->
+        <text x="8"  y="34" fill="#4ade80" font-family="monospace" font-size="11">0</text>
+        <text x="20" y="34" fill="#4ade80" font-family="monospace" font-size="11">1</text>
+        <text x="32" y="34" fill="#4ade80" font-family="monospace" font-size="11">1</text>
+        <text x="44" y="34" fill="#f87171" font-family="monospace" font-size="11">0</text>
+        <text x="56" y="34" fill="#4ade80" font-family="monospace" font-size="11">1</text>
+        <text x="68" y="34" fill="#4ade80" font-family="monospace" font-size="11">1</text>
+        <text x="80" y="34" fill="#f87171" font-family="monospace" font-size="11">0</text>
+        <text x="92" y="34" fill="#4ade80" font-family="monospace" font-size="11">1</text>
+        <!-- simplified remaining rows -->
+        <text x="8"  y="48" fill="#3a3a55" font-family="monospace" font-size="11">· · · · · · · ·</text>
+        <text x="8"  y="62" fill="#3a3a55" font-family="monospace" font-size="11">· · · · · · · ·</text>
+        <text x="8"  y="76" fill="#3a3a55" font-family="monospace" font-size="11">· · · · · · · ·</text>
+        <text x="8"  y="90" fill="#3a3a55" font-family="monospace" font-size="11">· · · · · · · ·</text>
+      </g>
+      <text x="404" y="148" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="11">64-bit hash</text>
+      <text x="404" y="162" text-anchor="middle" fill="#9090b8" font-family="monospace" font-size="11">BigInt</text>
+
+      <!-- arrow 3 -->
+      <line x1="462" y1="78" x2="495" y2="78" stroke="#3a3a55" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="478" y="68" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">Hamming</text>
+      <text x="478" y="58" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">distance</text>
+
+      <!-- step 4: decision -->
+      <g transform="translate(497,40)">
+        <rect width="108" height="76" rx="8" fill="#0f0f18" stroke="#24242f"/>
+        <text x="54" y="22" text-anchor="middle" fill="#9090b8" font-family="monospace" font-size="10">dist ≤ 8</text>
+        <rect x="16" y="30" width="76" height="18" rx="4" fill="#f87171" opacity=".15" stroke="#f87171" stroke-opacity=".4"/>
+        <text x="54" y="43" text-anchor="middle" fill="#f87171" font-family="monospace" font-size="11" font-weight="600">DUPLICATE</text>
+        <text x="54" y="56" text-anchor="middle" fill="#9090b8" font-family="monospace" font-size="10">dist &gt; 8</text>
+        <rect x="16" y="62" width="76" height="8" rx="3" fill="#4ade80" opacity=".2"/>
+        <text x="54" y="70" text-anchor="middle" fill="#4ade80" font-family="monospace" font-size="10" font-weight="600">KEEP →</text>
+      </g>
+      <text x="551" y="148" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="11">dedupe decision</text>
+
+      <!-- Hamming distance visualization -->
+      <rect x="20" y="188" width="700" height="56" rx="8" fill="#0f0f18" stroke="#24242f"/>
+      <text x="36" y="207" fill="#5a5a80" font-family="monospace" font-size="10">frame A</text>
+      <text x="36" y="230" fill="#5a5a80" font-family="monospace" font-size="10">frame B</text>
+
+      <!-- hash bits for frame A -->
+      <text x="100" y="207" fill="#4ade80" font-family="monospace" font-size="13" letter-spacing="3">1 1 0 1 1 0 1 0</text>
+      <text x="100" y="230" fill="#4ade80" font-family="monospace" font-size="13" letter-spacing="3">1 1 0 1 1 0 1 0</text>
+      <text x="298" y="207" fill="#f87171" font-family="monospace" font-size="13" letter-spacing="3">1 1 0 0 1 1</text>
+      <text x="298" y="230" fill="#4ade80" font-family="monospace" font-size="13" letter-spacing="3">1 0 1 0 0 1</text>
+      <!-- difference markers -->
+      <line x1="314" y1="212" x2="314" y2="234" stroke="#f87171" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="330" y1="212" x2="330" y2="234" stroke="#f87171" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="358" y1="212" x2="358" y2="234" stroke="#f87171" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="374" y1="212" x2="374" y2="234" stroke="#f87171" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="544" y="207" fill="#9090b8" font-family="monospace" font-size="12">· · ·</text>
+      <text x="544" y="230" fill="#9090b8" font-family="monospace" font-size="12">· · ·</text>
+      <text x="610" y="218" fill="#fbbf24" font-family="monospace" font-size="12" font-weight="700">dist = 4</text>
+      <rect x="600" y="206" width="70" height="20" rx="4" fill="#fbbf24" opacity=".08" stroke="#fbbf24" stroke-opacity=".25"/>
+      <text x="685" y="218" fill="#f87171" font-family="monospace" font-size="11" font-weight="600">DUPE</text>
+    </svg>
+    <figcaption>fig 2 — dHash pipeline: 1920×1080 source → 9×8 greyscale → 64-bit gradient fingerprint → Hamming distance decision</figcaption>
+  </figure>
+
+  <h3>Kernighan's popcount — O(set bits) not O(64)</h3>
+
+  <p>
+    Computing Hamming distance means counting the differing bits between two 64-bit hashes.
+    The obvious approach loops 64 times. Kernighan's trick loops only as many times as
+    there are <em>set</em> bits — typically 4–12 for near-duplicates.
+  </p>
+
+<pre><code><span class="kw">export function</span> <span class="fn">hammingDistance</span>(a: DHash, b: DHash): <span class="kw">number</span> {
+  <span class="kw">let</span> diff  = a ^ b;      <span class="cm">// XOR: 1 where bits differ</span>
+  <span class="kw">let</span> count = <span class="num">0</span>;
+  <span class="kw">while</span> (diff > <span class="num">0n</span>) {
+    diff &= diff - <span class="num">1n</span>;    <span class="cm">// clears the lowest set bit</span>
+    count++;
+  }
+  <span class="kw">return</span> count;
+}</code></pre>
+
+  <div class="callout">
+    <strong>Why BigInt?</strong> JavaScript numbers are IEEE 754 doubles —
+    they cannot safely represent 64-bit integers. <code>BigInt</code> gives exact
+    bitwise arithmetic. The <code>n</code> suffix (<code>0n</code>, <code>1n</code>)
+    is the BigInt literal syntax.
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       STAGE 2: SSIM NOVELTY
+  ══════════════════════════════════════════════ -->
+  <h2>Stage 2 — Novelty scoring with SSIM</h2>
+
+  <p>
+    After deduplication we have ~1,200 structurally unique frames.
+    But "unique" doesn't mean "interesting" — typing a few characters passes the
+    dHash threshold but contributes almost nothing to the story.
+    We need a <strong>novelty score</strong> that measures how much a frame
+    advances the visual narrative.
+  </p>
+
+  <p>
+    We use a regional <strong>SSIM</strong> (Structural Similarity Index) comparison
+    between consecutive frames. Low SSIM = high novelty = candidate moment.
+  </p>
+
+  <!-- SSIM formula -->
+  <div class="formula-block">
+    <div class="formula">
+      SSIM(<span class="hl">x</span>, <span class="hl2">y</span>) =
+      <span style="font-size:28px">&nbsp;</span>
+      <span style="border-top: 1.5px solid #e2e2ec; display:inline-block; padding-top:4px">
+        (2<span class="hl">μ<sub>x</sub></span><span class="hl2">μ<sub>y</sub></span> + C<sub>1</sub>)
+        (2<span class="hl">σ<sub>xy</sub></span> + C<sub>2</sub>)
+      </span>
+      <br/>
+      <span style="border-top: 1.5px solid transparent; display:inline-block; padding-top:4px">
+        (<span class="hl">μ<sub>x</sub></span><sup>2</sup> + <span class="hl2">μ<sub>y</sub></span><sup>2</sup> + C<sub>1</sub>)
+        (<span class="hl">σ<sub>x</sub></span><sup>2</sup> + <span class="hl2">σ<sub>y</sub></span><sup>2</sup> + C<sub>2</sub>)
+      </span>
+    </div>
+    <div class="formula-label">result ∈ [0, 1] — 1 = identical, 0 = completely different</div>
+  </div>
+
+  <p>
+    Computing full-image SSIM is expensive. Instead we tile each frame into
+    <strong>16 non-overlapping regions</strong> and average the regional scores.
+    This also makes the metric <em>spatially aware</em> — a change in one corner
+    doesn't hide stagnation everywhere else.
+  </p>
+
+  <h3>Single-pass variance — one loop, not two</h3>
+
+  <p>
+    The naive SSIM implementation computes the mean in a first pass,
+    then variance in a second. We can eliminate the second pass using the
+    computational formula for variance:
+  </p>
+
+  <div class="formula-block">
+    <div class="formula">
+      Var(<span class="hl">X</span>) = E[<span class="hl">X</span><sup>2</sup>] − E[<span class="hl">X</span>]<sup>2</sup>
+    </div>
+    <div class="formula-label">accumulate Σx, Σx², Σy, Σy², Σxy in one loop → compute all statistics afterwards</div>
+  </div>
+
+<pre><code><span class="kw">let</span> sumA=<span class="num">0</span>, sumB=<span class="num">0</span>, sumAA=<span class="num">0</span>, sumBB=<span class="num">0</span>, sumAB=<span class="num">0</span>;
+<span class="kw">const</span> n = (x1-x0) * (y1-y0);
+
+<span class="kw">for</span> (<span class="kw">let</span> y=y0; y&lt;y1; y++) {
+  <span class="kw">for</span> (<span class="kw">let</span> x=x0; x&lt;x1; x++) {
+    <span class="kw">const</span> pa = a.pixels[y*W+x] ?? <span class="num">0</span>;
+    <span class="kw">const</span> pb = b.pixels[y*W+x] ?? <span class="num">0</span>;
+    sumA  += pa;   sumB  += pb;
+    sumAA += pa*pa; sumBB += pb*pb; sumAB += pa*pb;
+  }
+}
+
+<span class="kw">const</span> muA = sumA/n, muB = sumB/n;
+<span class="kw">const</span> varA  = sumAA/n - muA*muA;   <span class="cm">// Var(X) = E[X²] − E[X]²</span>
+<span class="kw">const</span> varB  = sumBB/n - muB*muB;
+<span class="kw">const</span> covAB = sumAB/n - muA*muB;</code></pre>
+
+  <!-- novelty timeline -->
+  <figure>
+    <svg viewBox="0 0 740 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- axes -->
+      <line x1="50" y1="20" x2="50"  y2="155" stroke="#24242f" stroke-width="1"/>
+      <line x1="50" y1="155" x2="720" y2="155" stroke="#24242f" stroke-width="1"/>
+
+      <!-- y-axis labels -->
+      <text x="42" y="24"  text-anchor="end" fill="#3a3a55" font-family="monospace" font-size="10">1.0</text>
+      <text x="42" y="64"  text-anchor="end" fill="#3a3a55" font-family="monospace" font-size="10">0.6</text>
+      <text x="42" y="104" text-anchor="end" fill="#3a3a55" font-family="monospace" font-size="10">0.2</text>
+      <text x="42" y="155" text-anchor="end" fill="#3a3a55" font-family="monospace" font-size="10">0.0</text>
+
+      <!-- y-axis title -->
+      <text x="14" y="90" fill="#5a5a80" font-family="monospace" font-size="10" transform="rotate(-90,14,90)">novelty score</text>
+
+      <!-- grid lines -->
+      <line x1="50" y1="24"  x2="720" y2="24"  stroke="#1a1a28" stroke-width="1" stroke-dasharray="3,4"/>
+      <line x1="50" y1="64"  x2="720" y2="64"  stroke="#1a1a28" stroke-width="1" stroke-dasharray="3,4"/>
+      <line x1="50" y1="104" x2="720" y2="104" stroke="#1a1a28" stroke-width="1" stroke-dasharray="3,4"/>
+
+      <!-- threshold line -->
+      <line x1="50" y1="84" x2="720" y2="84" stroke="#fbbf24" stroke-width="1" stroke-dasharray="6,4" opacity=".5"/>
+      <text x="724" y="87" fill="#fbbf24" font-family="monospace" font-size="9" opacity=".7">threshold</text>
+
+      <!-- novelty polyline (approximated data) -->
+      <polyline
+        stroke="#4ade80" stroke-width="1.5" fill="none" opacity=".7"
+        points="
+          55,148 70,145 85,148 100,147 115,148 130,146 145,148
+          155,80  170,110 185,130 200,140 215,145 230,148
+          240,30  255,90  270,130 285,140 295,148
+          305,55  320,100 335,130 345,145 360,148 375,148
+          380,70  395,115 410,138 425,145
+          430,40  445,85  460,120 475,140 490,145
+          495,65  510,105 525,135 540,148
+          545,35  560,75  575,115 590,135 605,148
+          615,90  630,125 645,145 660,148
+          665,50  680,100 695,130 710,148 720,148
+        "
+      />
+
+      <!-- selected moment vertical lines + dots -->
+      <line x1="155" y1="20" x2="155" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="155" cy="80" r="5" fill="#8b5cf6"/>
+
+      <line x1="240" y1="20" x2="240" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="240" cy="30" r="5" fill="#8b5cf6"/>
+
+      <line x1="305" y1="20" x2="305" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="305" cy="55" r="5" fill="#8b5cf6"/>
+
+      <line x1="380" y1="20" x2="380" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="380" cy="70" r="5" fill="#8b5cf6"/>
+
+      <line x1="430" y1="20" x2="430" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="430" cy="40" r="5" fill="#8b5cf6"/>
+
+      <line x1="495" y1="20" x2="495" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="495" cy="65" r="5" fill="#8b5cf6"/>
+
+      <line x1="545" y1="20" x2="545" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="545" cy="35" r="5" fill="#8b5cf6"/>
+
+      <line x1="665" y1="20" x2="665" y2="155" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+      <circle cx="665" cy="50" r="5" fill="#8b5cf6"/>
+
+      <!-- x label -->
+      <text x="385" y="175" text-anchor="middle" fill="#3a3a55" font-family="monospace" font-size="10">frames (time →)</text>
+
+      <!-- legend -->
+      <circle cx="60" cy="185" r="4" fill="#8b5cf6"/>
+      <text x="70" y="189" fill="#9090b8" font-family="monospace" font-size="10">selected moment</text>
+      <line x1="190" y1="185" x2="210" y2="185" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,3" opacity=".6"/>
+      <text x="216" y="189" fill="#9090b8" font-family="monospace" font-size="10">novelty threshold</text>
+    </svg>
+    <figcaption>fig 3 — novelty scores over time; spikes indicate visual state changes; purple dots = selected moments</figcaption>
+  </figure>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       STAGE 3: SEGMENTATION
+  ══════════════════════════════════════════════ -->
+  <h2>Stage 3 — Temporal segmentation</h2>
+
+  <p>
+    A recording session has natural phases: <em>reading</em>, <em>typing</em>,
+    <em>debugging</em>, <em>researching</em>. Long gaps of low novelty
+    are "thinking time" — they shouldn't dominate the story.
+    We partition the frame sequence into <strong>activity windows</strong>
+    based on the density of high-novelty frames.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 740 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- raw timeline: 10000 frames as dots -->
+      <text x="20" y="30" fill="#5a5a80" font-family="monospace" font-size="10">raw frames</text>
+
+      <!-- segments background regions -->
+      <rect x="20"  y="38" width="120" height="24" rx="3" fill="#1a1a28"/>
+      <rect x="148" y="38" width="90"  height="24" rx="3" fill="#1a1a28"/>
+      <rect x="246" y="38" width="160" height="24" rx="3" fill="#1a1a28"/>
+      <rect x="414" y="38" width="60"  height="24" rx="3" fill="#1a1a28"/>
+      <rect x="482" y="38" width="130" height="24" rx="3" fill="#1a1a28"/>
+      <rect x="620" y="38" width="100" height="24" rx="3" fill="#1a1a28"/>
+
+      <!-- dots (grey = normal, violet = selected) -->
+      <!-- segment 1: mostly grey, 2 violet -->
+      <rect x="22"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="26"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="30"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="34"  y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="38"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="42"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="46"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="50"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="54"  y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="58"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="62"  y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <text x="75"  y="48" fill="#3a3a55" font-family="monospace" font-size="8">· · ·</text>
+      <rect x="100" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="104" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="108" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="112" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="116" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="120" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="124" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="128" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="132" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+
+      <!-- gap -->
+      <text x="142" y="52" fill="#1e1e2e" font-family="monospace" font-size="8">╱</text>
+
+      <!-- segment 2: dense violet (active coding) -->
+      <rect x="150" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="154" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="158" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="162" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="166" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="170" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="174" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="178" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="182" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="186" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="190" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="194" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="198" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="202" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="206" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="210" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="214" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="218" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="222" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="226" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+
+      <!-- etc — just fill remaining with pattern -->
+      <text x="260" y="52" fill="#3a3a55" font-family="monospace" font-size="8">· · · · · · · · ·</text>
+      <rect x="350" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="358" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="366" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <text x="380" y="52" fill="#3a3a55" font-family="monospace" font-size="8">· · ·</text>
+      <rect x="420" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="424" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="428" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="432" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="436" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+      <rect x="484" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <text x="495" y="52" fill="#3a3a55" font-family="monospace" font-size="8">· · · · · · · · ·</text>
+      <rect x="590" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="622" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <text x="635" y="52" fill="#3a3a55" font-family="monospace" font-size="8">· · · · · · ·</text>
+      <rect x="700" y="44" width="2" height="12" rx="1" fill="#7c3aed"/>
+      <rect x="706" y="44" width="2" height="12" rx="1" fill="#8b5cf6"/>
+      <rect x="712" y="44" width="2" height="12" rx="1" fill="#2d2d45"/>
+
+      <!-- segment labels -->
+      <text x="80"  y="78" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="9">warm-up</text>
+      <text x="193" y="78" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9">active · dense</text>
+      <text x="326" y="78" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9">active · dense</text>
+      <text x="444" y="78" text-anchor="middle" fill="#5a5a80" font-family="monospace" font-size="9">idle</text>
+      <text x="547" y="78" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9">active</text>
+      <text x="670" y="78" text-anchor="middle" fill="#a78bfa" font-family="monospace" font-size="9">wrap-up</text>
+
+      <!-- bracket lines -->
+      <line x1="20"  y1="70" x2="20"  y2="75" stroke="#3a3a55" stroke-width="1"/>
+      <line x1="138" y1="70" x2="138" y2="75" stroke="#3a3a55" stroke-width="1"/>
+      <line x1="20"  y1="73" x2="138" y2="73" stroke="#3a3a55" stroke-width="1"/>
+
+      <line x1="148" y1="70" x2="148" y2="75" stroke="#8b5cf6" stroke-width="1"/>
+      <line x1="236" y1="70" x2="236" y2="75" stroke="#8b5cf6" stroke-width="1"/>
+      <line x1="148" y1="73" x2="236" y2="73" stroke="#8b5cf6" stroke-width="1"/>
+
+      <!-- segment budget display -->
+      <text x="20"  y="100" fill="#3a3a55" font-family="monospace" font-size="10">budget allocated proportionally to activity density</text>
+
+      <!-- bar chart of segment budgets -->
+      <rect x="20"  y="112" width="26" height="8" rx="2" fill="#3a3a55"/>
+      <rect x="50"  y="108" width="40" height="12" rx="2" fill="#8b5cf6"/>
+      <rect x="94"  y="106" width="60" height="14" rx="2" fill="#8b5cf6"/>
+      <rect x="158" y="116" width="16" height="4"  rx="2" fill="#2d2d45"/>
+      <rect x="178" y="110" width="44" height="10" rx="2" fill="#7c3aed"/>
+      <rect x="226" y="110" width="34" height="10" rx="2" fill="#7c3aed"/>
+    </svg>
+    <figcaption>fig 4 — temporal segmentation; violet segments receive more of the 30-moment budget proportional to activity density</figcaption>
+  </figure>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       RESULTS
+  ══════════════════════════════════════════════ -->
+  <h2>What it produces</h2>
+
+  <p>
+    A 2-hour coding session → <strong>30 moments</strong> → a 30-second GIF or MP4
+    that you can drop into a PR description, tweet, or portfolio.
+    Each moment is held for a duration proportional to how much happened during
+    that segment.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 740 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- before: 10k bars -->
+      <text x="20" y="16" fill="#5a5a80" font-family="monospace" font-size="10">input  · 10,847 frames</text>
+      <rect x="20" y="22" width="700" height="20" rx="4" fill="#1a1a28"/>
+      <!-- dense tiny rects -->
+      <rect x="20" y="22" width="700" height="20" rx="4" fill="url(#dense)"/>
+      <defs>
+        <pattern id="dense" patternUnits="userSpaceOnUse" width="4" height="20">
+          <rect width="3" height="20" fill="#24243a"/>
+        </pattern>
+      </defs>
+      <rect x="20" y="22" width="700" height="20" rx="4" fill="url(#dense)" opacity="1"/>
+
+      <!-- after: 30 violet bars -->
+      <text x="20" y="60" fill="#a78bfa" font-family="monospace" font-size="10">output ·     30 moments</text>
+      <rect x="20" y="66" width="700" height="20" rx="4" fill="#0f0f18"/>
+
+      <!-- 30 moment bars -->
+      <rect x="22"  y="68" width="6"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="42"  y="68" width="8"  height="16" rx="1" fill="#7c3aed"/>
+      <rect x="68"  y="68" width="14" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="98"  y="68" width="6"  height="16" rx="1" fill="#9060f0"/>
+      <rect x="120" y="68" width="10" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="148" y="68" width="16" height="16" rx="1" fill="#7c3aed"/>
+      <rect x="182" y="68" width="8"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="208" y="68" width="12" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="234" y="68" width="6"  height="16" rx="1" fill="#9060f0"/>
+      <rect x="258" y="68" width="18" height="16" rx="1" fill="#7c3aed"/>
+      <rect x="294" y="68" width="8"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="320" y="68" width="10" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="346" y="68" width="6"  height="16" rx="1" fill="#9060f0"/>
+      <rect x="366" y="68" width="14" height="16" rx="1" fill="#7c3aed"/>
+      <rect x="396" y="68" width="8"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="418" y="68" width="6"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="440" y="68" width="10" height="16" rx="1" fill="#9060f0"/>
+      <rect x="464" y="68" width="8"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="486" y="68" width="16" height="16" rx="1" fill="#7c3aed"/>
+      <rect x="516" y="68" width="6"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="536" y="68" width="10" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="562" y="68" width="8"  height="16" rx="1" fill="#9060f0"/>
+      <rect x="586" y="68" width="14" height="16" rx="1" fill="#7c3aed"/>
+      <rect x="614" y="68" width="6"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="634" y="68" width="10" height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="658" y="68" width="8"  height="16" rx="1" fill="#9060f0"/>
+      <rect x="680" y="68" width="6"  height="16" rx="1" fill="#7c3aed"/>
+      <rect x="700" y="68" width="8"  height="16" rx="1" fill="#8b5cf6"/>
+      <rect x="712" y="68" width="6"  height="16" rx="1" fill="#8b5cf6"/>
+    </svg>
+    <figcaption>fig 5 — compression ratio: 10,847 raw frames → 30 story moments; bar widths represent per-moment duration</figcaption>
+  </figure>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       OPEN SOURCE
+  ══════════════════════════════════════════════ -->
+  <h2>Open source</h2>
+
+  <p>
+    ProgressCut is fully open source — MIT license, pnpm monorepo,
+    187 tests, GitHub Actions CI on <code>macos-latest</code>.
+    If you want to dig into the algorithms or contribute, start with
+    <code>packages/engine/src/</code>.
+  </p>
+
+  <div class="callout">
+    <strong>Stack:</strong>
+    Electron + TypeScript · ESM throughout ·
+    Ports &amp; Adapters architecture (engine has zero platform deps) ·
+    sharp for pixel decoding · FFmpeg for rendering ·
+    Vitest for tests.
+  </div>
+
+  <a class="gh-link" href="https://github.com/icesurf666/progress-cut">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+    </svg>
+    github.com/icesurf666/progress-cut
+  </a>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@progresscut/domain": ["../domain/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

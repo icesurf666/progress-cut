@@ -1,0 +1,46 @@
+.eyebrow {
+  font: 9px var(--font-mono);
+  color: var(--text-secondary);
+  letter-spacing: 1.8px;
+  margin-bottom: 18px;
+}
+h1 {
+  font-size: 44px;
+  font-weight: 550;
+  letter-spacing: -2px;
+  line-height: 1.09;
+}
+h1 span {
+  color: var(--violet-light);
+}
+.intro {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.75;
+  margin-top: 14px;
+}
+.page-heading {
+  margin-bottom: 29px;
+}
+.setup-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  gap: 30px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+}
+h2 {
+  font-size: 12px;
+  font-weight: 550;
+}
+.micro {
+  font: 8px var(--font-mono);
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}

@@ -1,0 +1,142 @@
+.session-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-block: 1px solid var(--border);
+  padding: 25px 0;
+  margin: 30px 0;
+}
+.stat {
+  padding: 0 16px;
+  border-left: 1px solid var(--border);
+}
+.stat:first-child {
+  padding-left: 0;
+  border: 0;
+}
+.stat-val {
+  font: 24px var(--font-mono);
+  margin-bottom: 9px;
+}
+.result-list {
+  margin-bottom: 25px;
+}
+.result-item {
+  padding: 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 12px;
+}
+.ri-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ri-name {
+  flex: 1;
+  font-size: 12px;
+}
+.ri-play,
+.ri-tag {
+  padding: 5px 8px;
+  font: 9px var(--font-mono);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.ri-play:hover,
+.ri-tag:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+.ri-tag-gif {
+  color: var(--violet-light);
+  border-color: var(--violet-muted);
+}
+.ri-strip {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  margin-top: 15px;
+  overflow: hidden;
+  border-radius: 3px;
+  transition: opacity 0.15s;
+}
+.ri-strip:hover {
+  opacity: 0.88;
+}
+.ri-strip-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(9, 9, 11, 0.55);
+  color: var(--text);
+  font: 10px var(--font-mono);
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.ri-strip:hover .ri-strip-hint {
+  opacity: 1;
+}
+.ri-thumb {
+  flex: 1;
+  min-width: 0;
+  height: 90px;
+  object-fit: cover;
+  background: var(--surface-raised);
+  border-radius: 2px;
+}
+.done-actions {
+  display: flex;
+  gap: 10px;
+}
+.rerender-section {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.btn-rerender {
+  background: var(--surface-raised);
+  color: var(--violet-light);
+  border: 1px solid var(--violet-deep);
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-rerender:hover {
+  opacity: 0.8;
+}
+.btn-rerender:active {
+  opacity: 0.6;
+}
+.btn-rerender:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ri-strip {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}

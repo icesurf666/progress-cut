@@ -1,0 +1,40 @@
+<div id="app" data-state="idle">
+  <aside class="sidebar">
+    <button id="nav-home" class="brand" type="button" title="Back to home">
+      <img src="assets/brand-mark.png" alt="" /><span>Progress<span class="wm-cut">Cut</span></span>
+    </button>
+    <div class="workspace-label">YOUR WORKSPACE</div>
+    <div class="nav-current">
+      <span class="nav-icon">▣</span> Session <span class="nav-slash" id="nav-slash-state">/</span>
+    </div>
+    <div class="sidebar-section-label">RECENT</div>
+    <div id="history-list" class="history-list"></div>
+    <div class="sidebar-bottom">
+      <span class="small-cut">╱</span>
+      <p>Hours of work.<br />A story worth watching.</p>
+      <span class="version">PROGRESSCUT / V0.1</span>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <span
+        >Workspace <span class="breadcrumb">/</span> <span id="view-label">New session</span></span
+      ><span class="app-status" id="app-status">Ready to capture</span>
+    </header>
+    <div class="deps-banner hidden" id="deps-banner" role="alert">
+      <span class="deps-icon">⚠</span>
+      <div class="deps-text">
+        <strong id="deps-title">Missing dependency</strong>
+        <span id="deps-body"></span>
+      </div>
+    </div>
+    <div class="update-banner hidden" id="update-banner" role="status">
+      <span id="update-text"></span>
+      <button class="update-btn hidden" id="btn-install-update" type="button">Restart to update</button>
+    </div>
+    <main></main>
+    <footer class="workspace-footer">
+      <span>TURN PROGRESS INTO STORIES.</span><span>ON YOUR MACHINE. IN YOUR FLOW. <i>╱</i></span>
+    </footer>
+  </div>
+</div>

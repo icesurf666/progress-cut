@@ -1,0 +1,37 @@
+<div id="panel-done" class="panel hidden">
+  <div class="eyebrow complete-label">03 / SESSION COMPLETE</div>
+  <h1>Progress, <span>cut.</span></h1>
+  <p class="intro" id="done-summary">Your work, condensed into a story worth sharing.</p>
+  <div class="session-stats" id="session-stats"></div>
+  <div class="section-heading">
+    <h2>Your stories</h2>
+    <span class="micro">READY TO SHARE</span>
+  </div>
+  <div class="result-list" id="result-list"></div>
+  <div class="rerender-section" id="rerender-section">
+    <div class="section-heading">
+      <h2>Re-render</h2>
+      <span class="micro">ADJUST &amp; REGENERATE</span>
+    </div>
+    <div class="setting">
+      <div class="setting-row">
+        <label for="slider-rerender" class="setting-key">Story length</label>
+        <output class="setting-val" id="val-rerender" for="slider-rerender">1:00</output>
+      </div>
+      <input type="range" id="slider-rerender" min="15" max="300" value="60" step="15" />
+      <div class="range-scale"><span>15 sec</span><span>5 min</span></div>
+    </div>
+    <div class="toggle-row" id="fmt-rerender" role="group" aria-label="Output format">
+      <button type="button" class="toggle-opt active" data-fmt="both" aria-pressed="true">
+        MP4 + GIF
+      </button>
+      <button type="button" class="toggle-opt" data-fmt="mp4" aria-pressed="false">MP4</button>
+      <button type="button" class="toggle-opt" data-fmt="gif" aria-pressed="false">GIF</button>
+    </div>
+    <button id="btn-rerender" class="btn btn-rerender">Re-render <span>↻</span></button>
+  </div>
+  <div class="done-actions">
+    <button id="btn-open" class="btn btn-open">Open in Finder <span>↗</span></button
+    ><button id="btn-again" class="btn btn-again">New session <span>＋</span></button>
+  </div>
+</div>

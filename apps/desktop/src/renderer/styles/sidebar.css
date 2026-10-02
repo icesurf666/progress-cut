@@ -1,0 +1,90 @@
+#app {
+  display: grid;
+  grid-template-columns: 186px minmax(0, 1fr);
+  min-height: 100vh;
+}
+.sidebar {
+  border-right: 1px solid var(--border-subtle);
+  padding: 29px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  background: #0c0c0f;
+  -webkit-app-region: drag;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.7px;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 0;
+  cursor: default;
+  text-align: left;
+  -webkit-app-region: no-drag;
+}
+/* only show pointer + hover when navigation is available */
+#app[data-state='done'] .brand,
+#app[data-state='processing'] .brand {
+  cursor: pointer;
+}
+#app[data-state='done'] .brand:hover,
+#app[data-state='processing'] .brand:hover {
+  opacity: 0.75;
+}
+.brand img {
+  width: 33px;
+  height: 35px;
+  object-fit: contain;
+}
+.wm-cut {
+  color: var(--violet);
+}
+.workspace-label {
+  margin: 53px 10px 15px;
+  font: 9px var(--font-mono);
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
+.nav-current {
+  display: flex;
+  gap: 11px;
+  padding: 12px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.nav-icon {
+  color: var(--violet-light);
+}
+.nav-slash {
+  margin-left: auto;
+  color: var(--violet);
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 24px 10px 0;
+}
+.small-cut {
+  display: block;
+  color: var(--violet-light);
+  font-size: 35px;
+  font-weight: 200;
+  margin-bottom: 16px;
+}
+.sidebar-bottom p {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+.version {
+  display: block;
+  margin-top: 26px;
+  font: 8px var(--font-mono);
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}

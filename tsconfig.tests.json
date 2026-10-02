@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2022", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@progresscut/domain": ["packages/domain/src/index.ts"],
+      "@progresscut/engine": ["packages/engine/src/index.ts"],
+      "@progresscut/capture": ["packages/capture/src/index.ts"],
+      "@progresscut/render": ["packages/render/src/index.ts"]
+    }
+  },
+  "include": ["packages/*/tests/**/*.ts", "apps/*/tests/**/*.ts", "tests/helpers/**/*.ts"]
+}

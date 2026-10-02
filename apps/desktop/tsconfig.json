@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@progresscut/capture": ["../../packages/capture/src/index.ts"],
+      "@progresscut/domain": ["../../packages/domain/src/index.ts"],
+      "@progresscut/engine": ["../../packages/engine/src/index.ts"],
+      "@progresscut/render": ["../../packages/render/src/index.ts"]
+    },
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["src", "build.mjs"]
+}

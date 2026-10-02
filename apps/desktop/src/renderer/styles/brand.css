@@ -1,0 +1,91 @@
+.brand-canvas {
+  border: 1px solid var(--border-subtle);
+  background: #0d0d10;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 370px;
+}
+.canvas-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 17px 17px 0;
+  font: 8px var(--font-mono);
+  letter-spacing: 1.4px;
+  color: var(--text-dim);
+}
+.mark-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 185px;
+}
+.mark-stage img {
+  width: 100%;
+  max-width: 290px;
+  position: relative;
+  z-index: 1;
+}
+.construction-circle {
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  border: 1px solid #27232f;
+  border-radius: 50%;
+}
+.construction-circle::before,
+.construction-circle::after {
+  content: '';
+  position: absolute;
+  background: #24212b;
+}
+.construction-circle::before {
+  top: -25px;
+  bottom: -25px;
+  width: 1px;
+  left: 50%;
+}
+.construction-circle::after {
+  left: -30px;
+  right: -30px;
+  height: 1px;
+  top: 50%;
+}
+.construction-line {
+  position: absolute;
+  width: 270px;
+  height: 1px;
+  background: #393044;
+  transform: rotate(-33deg);
+}
+.canvas-caption {
+  padding: 0 23px 23px;
+}
+.japanese {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+}
+.canvas-caption p {
+  font-size: 19px;
+  letter-spacing: -0.5px;
+  line-height: 1.4;
+  margin-top: 12px;
+}
+.canvas-caption p span {
+  color: var(--text-secondary);
+}
+.canvas-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  font: 7px var(--font-mono);
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+.canvas-footer i {
+  color: var(--violet);
+}

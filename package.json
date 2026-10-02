@@ -1,0 +1,39 @@
+{
+  "name": "progresscut",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Turn long work sessions into short visual progress stories",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck && tsc --noEmit -p tsconfig.tests.json",
+    "lint": "eslint packages apps",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "bench": "vitest bench",
+    "check": "pnpm check:lines && pnpm format:check && pnpm typecheck && pnpm lint && pnpm test",
+    "desktop": "cd apps/desktop && node build.mjs && UV_THREADPOOL_SIZE=8 ../../node_modules/.pnpm/node_modules/.bin/electron .",
+    "pack": "node apps/desktop/pack.mjs --dir",
+    "dist": "node apps/desktop/pack.mjs",
+    "check:lines": "node scripts/check-file-length.mjs",
+    "test:desktop-ui": "pnpm --filter @progresscut/desktop build && node apps/desktop/tests/ui/run.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^9.0.0",
+    "prettier": "^3.4.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.1.0"
+  }
+}

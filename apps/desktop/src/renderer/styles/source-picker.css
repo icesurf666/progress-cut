@@ -1,0 +1,50 @@
+/* ── source picker row ───────────────────────────────────────────────────── */
+.source-row {
+  padding: 14px 0 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.source-picker-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 12px;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 11px;
+  text-align: left;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.source-picker-btn:hover {
+  background: var(--surface-raised);
+  border-color: var(--border);
+}
+.source-picker-btn.has-window {
+  border-color: #8b5cf650;
+  color: var(--violet-light);
+}
+.source-icon {
+  color: var(--violet-light);
+  font-size: 13px;
+}
+#source-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.source-change {
+  flex-shrink: 0;
+  color: var(--text-dim);
+}
+.source-picker-btn:hover .source-change {
+  color: var(--violet-light);
+}
+
+/* ── /window picker ───────────────────────────────────────────────────────── */

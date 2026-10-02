@@ -1,0 +1,29 @@
+node_modules/
+dist/
+
+# Session data — never commit raw screenshots
+sessions/
+frames/
+*.webp
+*.mp4
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Test output
+coverage/
+.vitest-cache/
+
+# Experiments output
+experiments/output/
+benchmarks/output/
+release/
+apps/desktop/build/icon.icns
+apps/desktop/build/icon.png
+apps/desktop/build/*.iconset
