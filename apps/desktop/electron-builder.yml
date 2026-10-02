@@ -4,7 +4,7 @@ copyright: Copyright © 2025 ProgressCut
 
 publish:
   provider: github
-  owner: YOUR_GITHUB_USERNAME
+  owner: icesurf666
   repo: progress-cut
 
 directories:
