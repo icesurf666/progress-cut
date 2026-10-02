@@ -24,6 +24,7 @@ const excludedDirectories = new Set([
   '.git',
   'coverage',
   '.vitest-cache',
+  'docs',
 ]);
 const excludedFiles = new Set(['pnpm-lock.yaml', 'package-lock.json']);
 const maximumLines = 200;
