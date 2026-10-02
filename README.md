@@ -1,5 +1,5 @@
 # ProgressCut
-
+![ProgressCut](docs/brand/demo.png)
 > Turn hours of coding into a one-minute build story. Automatically.
 
 ProgressCut is a local-first macOS desktop app that captures your screen while you work and compresses the session into a short, shareable progress story — a GIF or MP4 that shows your actual progress without the noise.
