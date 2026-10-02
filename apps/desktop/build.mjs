@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import console from 'node:console';
+import { mkdir } from 'node:fs/promises';
 import { build } from 'esbuild';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -24,6 +25,8 @@ const trayIcon = Buffer.from(
      <line x1="5" y1="16" x2="13" y2="2" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
    </svg>`,
 );
+
+await mkdir(resolve(root, 'dist'), { recursive: true });
 
 await Promise.all([
   build({
