@@ -5,3 +5,4 @@ export { selectStoryFromSegments } from './selectStoryFromSegments.js';
 export type { SegmentSelectOptions } from './selectStoryFromSegments.js';
 
 export { assignDurations } from './assignDurations.js';
+export { sampleUniformStory } from './sampleUniformStory.js';

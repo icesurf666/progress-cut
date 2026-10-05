@@ -6,3 +6,4 @@ export * from './novelty/index.js';
 export * from './segmentation/index.js';
 export * from './selector/index.js';
 export { buildStory, buildFrameMap } from './pipeline/buildStory.js';
+export { buildStoryLabReport, selectedStoryLabFrames } from './report/buildStoryLabReport.js';

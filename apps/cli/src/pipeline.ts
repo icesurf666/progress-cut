@@ -1,7 +1,9 @@
 import {
   deduplicateFrames,
   scoreFrames,
-  selectStory,
+  sampleUniformStory,
+  segmentCandidates,
+  selectStoryFromSegments,
   buildStory,
   buildFrameMap,
 } from '@progresscut/engine';
@@ -34,7 +36,10 @@ async function runPipeline(
 ): Promise<PipelineReport> {
   const startedAt = Date.now();
   const candidates = await prepareCandidates(strategy, observations);
-  const moments = selectStory(candidates, targetDurationMs);
+  const moments =
+    strategy === 'novelty'
+      ? selectStoryFromSegments(segmentCandidates(candidates), targetDurationMs)
+      : sampleUniformStory(candidates, targetDurationMs);
   const name = pipelineNames[strategy];
   console.log(
     `  [${name}] ${candidates.length}/${observations.length} frames; ${moments.length} moments`,

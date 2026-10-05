@@ -2,8 +2,14 @@ import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { ingestFrames } from '@progresscut/engine';
 import { pipelineA, pipelineB, pipelineC, type PipelineReport } from './pipeline.js';
+import { createBlindKit } from './evaluation/createBlindKit.js';
 
-export async function runCompare(framesDir: string, outputDir: string, targetMs: number): Promise<void> {
+export async function runCompare(
+  framesDir: string,
+  outputDir: string,
+  targetMs: number,
+  blind = false,
+): Promise<void> {
   console.log(`\nProgressCut M0 — compare`);
   console.log(`  frames dir : ${framesDir}`);
   console.log(`  output dir : ${outputDir}`);
@@ -25,12 +31,23 @@ export async function runCompare(framesDir: string, outputDir: string, targetMs:
   const last = observations.at(-1);
   if (!first || !last) throw new Error('No frames available for comparison');
   const span = last.timestampMs - first.timestampMs;
-  console.log(`  session : ${(span / 1000 / 60).toFixed(1)} min  |  ingest: ${Date.now() - t0} ms\n`);
+  console.log(
+    `  session : ${(span / 1000 / 60).toFixed(1)} min  |  ingest: ${Date.now() - t0} ms\n`,
+  );
 
   const runs: [string, () => Promise<PipelineReport>][] = [
-    ['A — uniform (baseline)', () => pipelineA(observations, targetMs, resolve(outputDir, 'A-uniform.mp4'))],
-    ['B — dedupe + uniform',   () => pipelineB(observations, targetMs, resolve(outputDir, 'B-dedupe-uniform.mp4'))],
-    ['C — ProgressCut',        () => pipelineC(observations, targetMs, resolve(outputDir, 'C-progresscut.mp4'))],
+    [
+      'A — uniform (baseline)',
+      () => pipelineA(observations, targetMs, resolve(outputDir, 'A-uniform.mp4')),
+    ],
+    [
+      'B — dedupe + uniform',
+      () => pipelineB(observations, targetMs, resolve(outputDir, 'B-dedupe-uniform.mp4')),
+    ],
+    [
+      'C — ProgressCut',
+      () => pipelineC(observations, targetMs, resolve(outputDir, 'C-progresscut.mp4')),
+    ],
   ];
 
   const reports: PipelineReport[] = [];
@@ -40,12 +57,19 @@ export async function runCompare(framesDir: string, outputDir: string, targetMs:
       const r = await run();
       reports.push(r);
       console.log(`  → ${r.outputPath}`);
-      console.log(`     ${(r.fileSizeBytes / 1024 / 1024).toFixed(1)} MB  |  ${r.processingMs} ms\n`);
+      console.log(
+        `     ${(r.fileSizeBytes / 1024 / 1024).toFixed(1)} MB  |  ${r.processingMs} ms\n`,
+      );
     } catch (err) {
       console.error(`  FAILED: ${err instanceof Error ? err.message : String(err)}\n`);
     }
   }
 
+  if (blind) {
+    const kit = await createBlindKit(reports, outputDir, targetMs);
+    console.log(`Reviewer folders: ${kit.reviewerDirectory}`);
+    console.log(`Organizer-only key (do not share): ${kit.privateKeyPath}`);
+  }
   if (reports.length === 0) return;
 
   console.log('── summary ──────────────────────────────────────────────────');

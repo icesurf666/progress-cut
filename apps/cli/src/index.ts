@@ -5,16 +5,19 @@
  * Subcommands:
  *   capture  — record a coding session as timestamped PNG frames
  *   compare  — generate A/B/C comparison MP4s from a frames directory
+ *   report   — generate a visual Story Lab report from a frames directory
  *
  * Usage:
  *   pnpm tsx apps/cli/src/index.ts capture <outputDir> [--interval=5000] [--duration=3600000]
  *   pnpm tsx apps/cli/src/index.ts compare <framesDir> [outputDir] [--duration=60000]
+ *   pnpm tsx apps/cli/src/index.ts report <framesDir> [outputDir] [--duration=60000]
  *
  * If no subcommand is given, `compare` is assumed.
  */
 import { resolve } from 'node:path';
 import { runCapture } from './capture.js';
 import { runCompare } from './compare.js';
+import { writeStoryLab } from './report/index.js';
 
 // ── CLI arg helpers ───────────────────────────────────────────────────────────
 
@@ -42,8 +45,13 @@ ProgressCut CLI
     --duration  Max recording duration in ms (default: 3600000 = 1 h)
     Press Ctrl+C to stop early.
 
-  compare <framesDir> [outputDir] [--duration=<ms>]
+  compare <framesDir> [outputDir] [--duration=<ms>] [--blind]
     Generate A-uniform, B-dedupe-uniform, C-progresscut MP4s.
+    --duration  Target story length in ms (default: 60000 = 1 min)
+    --blind     Create neutral video kits for three reviewers and a private mapping key
+
+  report <framesDir> [outputDir] [--duration=<ms>]
+    Generate an HTML Story Lab report, timeline chart and metrics JSON.
     --duration  Target story length in ms (default: 60000 = 1 min)
 `.trim(),
   );
@@ -80,13 +88,25 @@ if (sub === 'capture') {
       console.error(err);
       process.exit(1);
     });
+} else if (sub === 'report') {
+  const framesDir = resolve(rest[0] ?? '.');
+  const outputDir = resolve(rest[1] ?? './output');
+  const targetMs = flag('duration', 60_000);
+  writeStoryLab(framesDir, outputDir, targetMs)
+    .then((result) => {
+      console.log(`\nStory Lab ready:\n  ${result.htmlPath}\n  ${result.dataPath}\n`);
+    })
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
 } else {
   const isExplicit = sub === 'compare';
   const framesDir = resolve(isExplicit ? (rest[0] ?? '.') : sub);
   const outputDir = resolve(isExplicit ? (rest[1] ?? './output') : (rest[0] ?? './output'));
   const targetMs = flag('duration', 60_000);
 
-  runCompare(framesDir, outputDir, targetMs).catch((err) => {
+  runCompare(framesDir, outputDir, targetMs, rawArgs.includes('--blind')).catch((err) => {
     console.error(err);
     process.exit(1);
   });
