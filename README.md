@@ -1,5 +1,7 @@
 # ProgressCut
+
 ![ProgressCut](docs/brand/demo.png)
+
 > Turn hours of coding into a one-minute build story. Automatically.
 
 ProgressCut is a local-first macOS desktop app that captures your screen while you work and compresses the session into a short, shareable progress story — a GIF or MP4 that shows your actual progress without the noise.
@@ -34,20 +36,54 @@ pnpm desktop        # build and launch the app
 
 ## Development
 
+Current milestone: [Launch Candidate 0.1](docs/launch-candidate-0.1.md).
+Feature development is frozen while story quality, packaged-app reliability,
+privacy and macOS distribution are validated.
+
 ```bash
 pnpm typecheck      # type check all packages
-pnpm test           # 187 tests
+pnpm test           # unit and integration tests
 pnpm lint           # eslint
 pnpm check          # typecheck + format + lint + test + line-length
 pnpm bench          # dedup parallel benchmark
+pnpm test:crash-recovery # macOS: isolated Electron + FFmpeg crash/restart smoke
 ```
 
 Build a distributable:
 
 ```bash
-pnpm pack           # unpackaged .app (fast, for smoke testing)
+pnpm run pack       # unpackaged .app (not the pnpm tarball command)
 pnpm dist           # .dmg
+pnpm test:packaged  # launch the built .app and export synthetic frames
 ```
+
+## Story Lab
+
+Turn a captured frame directory into an editorial-ready local report: a compression funnel,
+activity timeline, selected-frame contact sheet, and machine-readable metrics.
+
+```bash
+pnpm --filter @progresscut/cli start -- report \
+  ~/Desktop/progresscut-session/frames \
+  ~/Desktop/progresscut-story-lab \
+  --duration=60000
+```
+
+Open `~/Desktop/progresscut-story-lab/story-lab/index.html`. The report references local
+frames only; no data is uploaded.
+
+## Blind story-quality evaluation
+
+```bash
+pnpm --filter @progresscut/cli start -- compare \
+  /absolute/session/frames /absolute/evaluation/session-01 \
+  --duration=60000 --blind
+```
+
+Creates A/B/C exports and three reviewer kits with neutral clip names and rating
+forms. Share only each reviewer's folder, never the labeled exports or private key.
+See the [evaluation protocol](docs/launch-candidate-0.1.md#story-quality-evaluation-protocol)
+before collecting results. Real-session quality validation is still pending.
 
 ## Repository structure
 
