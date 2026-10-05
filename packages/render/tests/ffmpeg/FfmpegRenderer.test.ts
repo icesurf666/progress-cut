@@ -1,6 +1,6 @@
 import { assertDefined } from '../../../../tests/helpers/assertDefined.js';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -97,5 +97,45 @@ describe.skipIf(!FFMPEG)('FfmpegRenderer — integration (ffmpeg required)', () 
     });
     const { size } = await stat(outputPath);
     expect(result.fileSizeBytes).toBe(size);
+  });
+
+  it('fits the encoded duration for novelty-weighted moments within one output frame', async () => {
+    const frames = await Promise.all([
+      makeFrame('weighted-red.png', 255, 0, 0),
+      makeFrame('weighted-green.png', 0, 255, 0),
+      makeFrame('weighted-blue.png', 0, 0, 255),
+    ]);
+    const story = makeStory(
+      [2300, 450, 250].map((durationMs, index) => ({
+        frameId: String(index),
+        timestampMs: index * 1000,
+        durationMs,
+        score: 0.5,
+      })),
+    );
+    const frameMap = new Map(frames.map((path, index) => [String(index), path]));
+    const outputPath = join(dir, 'weighted.mp4');
+    await new FfmpegRenderer().render(story, frameMap, {
+      outputPath,
+      maxWidthPx: 320,
+      maxHeightPx: 240,
+      fps: 24,
+    });
+    const duration = Number(
+      execFileSync(
+        'ffprobe',
+        [
+          '-v',
+          'error',
+          '-show_entries',
+          'format=duration',
+          '-of',
+          'default=noprint_wrappers=1:nokey=1',
+          outputPath,
+        ],
+        { encoding: 'utf8' },
+      ).trim(),
+    );
+    expect(Math.abs(duration - story.totalDurationMs / 1000)).toBeLessThanOrEqual(1 / 24);
   });
 });

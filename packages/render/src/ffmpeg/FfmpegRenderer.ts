@@ -43,6 +43,8 @@ export class FfmpegRenderer implements StoryRenderer {
         'yuv420p',
         '-movflags',
         '+faststart',
+        '-t',
+        (story.totalDurationMs / 1000).toString(),
         '-y',
         outputPath,
       ]);
