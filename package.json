@@ -22,7 +22,9 @@
     "pack": "node apps/desktop/pack.mjs --dir",
     "dist": "node apps/desktop/pack.mjs",
     "check:lines": "node scripts/check-file-length.mjs",
-    "test:desktop-ui": "pnpm --filter @progresscut/desktop build && node apps/desktop/tests/ui/run.mjs"
+    "test:desktop-ui": "pnpm --filter @progresscut/desktop build && node apps/desktop/tests/ui/run.mjs",
+    "test:crash-recovery": "pnpm --filter @progresscut/desktop build && node apps/desktop/tests/crash/run.mjs",
+    "test:packaged": "node apps/desktop/tests/packaged/run.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

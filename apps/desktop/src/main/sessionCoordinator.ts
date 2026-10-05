@@ -30,10 +30,10 @@ export class SessionCoordinator {
     this.capture?.forceCapture();
   }
 
-  rerender(options: RerenderOptions): void {
+  rerender(options: RerenderOptions, onSuccess?: () => Promise<void>): void {
     if (this.isBusy) return;
     this.processing = true;
-    rerenderSession(options, this.forward);
+    rerenderSession(options, this.forward, onSuccess);
   }
 
   private readonly forward: EmitSessionEvent = (event) => {

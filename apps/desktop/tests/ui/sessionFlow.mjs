@@ -2,6 +2,7 @@ import { app } from 'electron';
 import assert from 'node:assert/strict';
 import console from 'node:console';
 import { createHarness } from './createHarness.mjs';
+import { verifyStartup } from './verifyStartup.mjs';
 
 async function verifySessionFlow() {
   const harness = await createHarness();
@@ -13,6 +14,7 @@ async function verifySessionFlow() {
   };
   assert.equal(await evaluate('document.images[0].naturalWidth > 0'), true);
   assert.equal(await phase(), 'idle');
+  await verifyStartup(harness);
   await screenshot('setup');
   await click('#fmt-rerender [data-fmt=mp4]');
   await click('#fmt-toggle [data-fmt=gif]');

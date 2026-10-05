@@ -1,8 +1,9 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import { join } from 'node:path';
 
 export function createWindow(bundleDirectory: string): BrowserWindow {
   const window = new BrowserWindow({
+    icon: join(app.getAppPath(), 'build/icon.png'),
     width: 980,
     minWidth: 760,
     height: 820,

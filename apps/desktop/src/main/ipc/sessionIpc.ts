@@ -1,8 +1,14 @@
 import { ipcMain, Notification, type BrowserWindow, type Tray } from 'electron';
 import type { RerenderOptions, SessionOptions } from '../../shared/session.js';
 import { SessionCoordinator } from '../sessionCoordinator.js';
+import { clearSessionManifest, type RecoverableSession } from '../sessionManifest.js';
 
-export function registerSessionIpc(window: BrowserWindow, tray: Tray): SessionCoordinator {
+export interface DesktopSessionController {
+  readonly sessions: SessionCoordinator;
+  recover(options: RecoverableSession): void;
+}
+
+export function registerSessionIpc(window: BrowserWindow, tray: Tray): DesktopSessionController {
   const sessions = new SessionCoordinator((event) => {
     if (event.type === 'capture:frame') tray.setToolTip(`ProgressCut — ${event.count} frames`);
     if (event.type === 'pipeline:result') {
@@ -12,7 +18,9 @@ export function registerSessionIpc(window: BrowserWindow, tray: Tray): SessionCo
         body: `${event.name} · ${megabytes} MB`,
       }).show();
     }
-    if (event.type === 'session:done') tray.setToolTip('ProgressCut — done');
+    if (event.type === 'session:done') {
+      tray.setToolTip('ProgressCut — done');
+    }
     if (event.type === 'session:error') tray.setToolTip('ProgressCut');
     window.webContents.send('session:event', event);
   });
@@ -31,5 +39,12 @@ export function registerSessionIpc(window: BrowserWindow, tray: Tray): SessionCo
     tray.setToolTip('ProgressCut — generating…');
     sessions.rerender(options);
   });
-  return sessions;
+  return {
+    sessions,
+    recover(options): void {
+      if (sessions.isBusy) return;
+      tray.setToolTip('ProgressCut — recovering…');
+      sessions.rerender(options, () => clearSessionManifest(options.outputDir));
+    },
+  };
 }

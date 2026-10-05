@@ -60,4 +60,16 @@ describe('session coordinator', () => {
     sessions.start(options);
     expect(mocks.start).toHaveBeenCalledTimes(2);
   });
+
+  it('forwards recovery completion cleanup and keeps ownership until terminal events', () => {
+    const sessions = new SessionCoordinator(vi.fn());
+    const onSuccess = vi.fn();
+    const recovery = { framesDir: '/frames', outputDir: '/output', targetMs: 1000 };
+    sessions.rerender(recovery, onSuccess);
+    expect(mocks.rerender).toHaveBeenCalledWith(recovery, expect.any(Function), onSuccess);
+    expect(sessions.isBusy).toBe(true);
+    forward({ type: 'session:error', message: 'render failed' });
+    expect(sessions.isBusy).toBe(false);
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
 });

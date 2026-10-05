@@ -1,14 +1,25 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { MacosCaptureProvider } from '@progresscut/capture';
 import { computeDHash } from '@progresscut/engine';
 import type { EmitSessionEvent, SessionOptions } from '../../shared/session.js';
 import { AdaptiveInterval } from './adaptiveInterval.js';
+import type { CaptureDestination } from '../sessionManifest.js';
 
 export interface CaptureControl {
   isStopped(): boolean;
   consumeSnapshotRequest(): boolean;
+}
+
+export function createCaptureDestination(options: SessionOptions): CaptureDestination {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const outputDir = join(
+    options.outputBaseDir ?? join(homedir(), 'Desktop'),
+    `progresscut-${timestamp}-${randomUUID()}`,
+  );
+  return { outputDir, framesDir: join(outputDir, 'frames') };
 }
 
 async function waitForCapture(milliseconds: number, control: CaptureControl): Promise<void> {
@@ -25,13 +36,9 @@ export async function captureFrames(
   options: SessionOptions,
   emit: EmitSessionEvent,
   control: CaptureControl,
+  destination = createCaptureDestination(options),
 ) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const outputDir = join(
-    options.outputBaseDir ?? join(homedir(), 'Desktop'),
-    `progresscut-${timestamp}`,
-  );
-  const framesDir = join(outputDir, 'frames');
+  const { outputDir, framesDir } = destination;
   await mkdir(framesDir, { recursive: true });
   const provider = new MacosCaptureProvider();
   const adaptiveInterval = new AdaptiveInterval(options.intervalMs);

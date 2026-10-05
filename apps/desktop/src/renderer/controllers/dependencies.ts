@@ -3,14 +3,15 @@ import { requireButton, requireElement } from '../lib/dom.js';
 
 export function bindDependencyNotice(bridge: DesktopBridge): void {
   bridge.onDepsMissing((missing) => {
-    requireElement('deps-banner').classList.remove('hidden');
+    requireElement('deps-banner').classList.toggle('hidden', missing.length === 0);
+    requireButton('btn-start').disabled = missing.length > 0;
+    if (!missing.length) return;
     const captureUnavailable = missing.includes('screencapture');
     requireElement('deps-title').textContent = captureUnavailable
       ? 'screencapture not found'
-      : 'ffmpeg not found — video export will fail';
+      : 'FFmpeg required before recording';
     requireElement('deps-body').textContent = captureUnavailable
       ? 'This app requires macOS'
       : 'Install with: brew install ffmpeg';
-    requireButton('btn-start').disabled = captureUnavailable;
   });
 }
