@@ -13,7 +13,7 @@ import { createRerenderController } from './controllers/rerender.js';
 import { bindSessionEvents } from './controllers/sessionEvents.js';
 import { bindDependencyNotice } from './controllers/dependencies.js';
 import { bindUpdateNotice } from './controllers/updater.js';
-import { requireElement } from './lib/dom.js';
+import { requireButton, requireElement } from './lib/dom.js';
 
 export function initializeApplication(bridge: DesktopBridge): void {
   mountApplication();
@@ -24,12 +24,18 @@ export function initializeApplication(bridge: DesktopBridge): void {
   const recording = createRecordingController(settings.intervalMs);
   const pipeline = createPipelineController();
   const preview = createPreviewController(bridge);
-  const results = createResultsController(state, bridge, preview.open, pipeline.failureDetails);
   const rerender = createRerenderController(state, bridge, () => {
     state.clearExports();
     pipeline.reset();
     view.show('processing');
   });
+  const results = createResultsController(
+    state,
+    bridge,
+    preview.open,
+    pipeline.failureDetails,
+    rerender.applyReview,
+  );
   const history = createHistoryController(state, bridge, (entry) => {
     state.loadHistory(entry);
     rerender.reset();
@@ -38,7 +44,7 @@ export function initializeApplication(bridge: DesktopBridge): void {
     view.show('done');
   });
   const start = (): void => {
-    if (state.phase !== 'idle') return;
+    if (state.phase !== 'idle' || requireButton('btn-start').disabled) return;
     state.beginCapture();
     pipeline.reset();
     requireElement('result-list').replaceChildren();

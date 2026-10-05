@@ -6,6 +6,8 @@ export const DEFAULT_MS_PER_MOMENT = 1_000;
 export interface SelectOptions {
   minMoments?: number;
   maxMoments?: number;
+  /** Frame IDs rejected during manual story review. */
+  excludeFrameIds?: readonly string[];
 }
 
 /**
@@ -37,7 +39,11 @@ export function selectStory(
     (a, b) => a.timestampMs - b.timestampMs || a.id.localeCompare(b.id),
   );
 
-  const selected = n >= sorted.length ? sorted : strideSample(sorted, n);
+  const excluded = new Set(options.excludeFrameIds);
+  const selected =
+    n >= sorted.length
+      ? sorted.filter((candidate) => !excluded.has(candidate.id))
+      : strideSample(sorted, n, excluded);
 
   const moments: StoryMoment[] = selected.map((f): StoryMoment => ({
     frameId: f.id,
@@ -62,21 +68,37 @@ function resolveCount(
   return Math.max(minMoments, Math.min(raw, available));
 }
 
-/** Divide sorted array into n equal strides; pick max-novelty per stride. */
-function strideSample(sorted: FrameCandidate[], n: number): FrameCandidate[] {
+/** Divide sorted array into n equal strides; pick the settled state per stride.
+ *
+ * "Settled" = last frame whose novelty exceeds the stride's median novelty.
+ * This avoids picking the first frame of an edit burst (highest novelty but
+ * mid-change) and instead captures the final state once the change has landed.
+ * Falls back to the max-novelty frame if no frame clears the median threshold.
+ */
+function strideSample(
+  sorted: FrameCandidate[],
+  n: number,
+  excluded: ReadonlySet<string>,
+): FrameCandidate[] {
   const stride = sorted.length / n;
   const result: FrameCandidate[] = [];
 
   for (let i = 0; i < n; i++) {
     const lo = Math.floor(i * stride);
     const hi = Math.floor((i + 1) * stride);
-    // `sorted.slice` is safe; lo < hi always holds since stride >= 1
-    const group = sorted.slice(lo, hi);
-    result.push(group.reduce((best, c) => (c.novelty > best.novelty ? c : best)));
+    const group = sorted.slice(lo, hi).filter((candidate) => !excluded.has(candidate.id));
+    if (group.length === 0) continue;
+
+    const novelties = group.map((c) => c.novelty).sort((a, b) => a - b);
+    const median = novelties[Math.floor(novelties.length / 2)] ?? 0;
+
+    // Last frame above the median novelty — the settled end-state of the burst.
+    const active = group.filter((c) => c.novelty >= median);
+    const pick = active.at(-1) ?? group.reduce((best, c) => (c.novelty > best.novelty ? c : best));
+
+    result.push(pick);
   }
 
-  // Groups are already in temporal order — sort is a no-op but makes the
-  // invariant explicit and guards against floating-point edge cases.
   result.sort((a, b) => a.timestampMs - b.timestampMs);
   return result;
 }

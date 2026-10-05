@@ -28,12 +28,26 @@ export function createStoryExport(
       if (result.gifPath) await bridge.copyImage(result.gifPath);
       else bridge.copyText(result.outputPath);
       copyButton.textContent = 'copied ✓';
-      setTimeout(() => { copyButton.textContent = 'copy'; }, 1500);
+      setTimeout(() => {
+        copyButton.textContent = 'copy';
+      }, 1500);
     } catch (error: unknown) {
       showToast(String(error));
     }
   });
   header.append(copyButton);
+  if (result.storyLabPath) {
+    const storyLabPath = result.storyLabPath;
+    const labButton = createElement('button', 'ri-tag ri-tag-lab', 'Story Lab');
+    labButton.addEventListener('click', () => bridge.openFile(storyLabPath));
+    header.append(labButton);
+  }
+  if (result.sharePackPath) {
+    const sharePackPath = result.sharePackPath;
+    const shareButton = createElement('button', 'ri-tag ri-tag-share', 'Share Pack');
+    shareButton.addEventListener('click', () => bridge.openFolder(sharePackPath));
+    header.append(shareButton);
+  }
   item.append(header);
   if (result.thumbnails.length) {
     const strip = createElement('button', 'ri-strip');

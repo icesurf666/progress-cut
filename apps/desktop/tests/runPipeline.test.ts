@@ -9,10 +9,16 @@ const mocks = vi.hoisted(() => ({
   stat: vi.fn(),
   render: vi.fn(),
   ingest: vi.fn(),
+  sharePack: vi.fn(),
+  socialCards: vi.fn(),
 }));
 vi.mock('@progresscut/engine', () => ({ ingestFrames: mocks.ingest }));
 vi.mock('@progresscut/render', () => ({ convertToGif: mocks.gif }));
 vi.mock('../src/main/pipeline/renderStory.js', () => ({ renderStory: mocks.render }));
+vi.mock('../src/main/pipeline/createSharePack.js', () => ({ createSharePack: mocks.sharePack }));
+vi.mock('../src/main/pipeline/createSocialCard.js', () => ({
+  createSocialCards: mocks.socialCards,
+}));
 vi.mock('../src/main/capture/captureFrames.js', () => ({ captureFrames: vi.fn() }));
 vi.mock('node:fs/promises', () => ({ stat: mocks.stat, unlink: mocks.unlink }));
 
@@ -29,6 +35,8 @@ beforeEach(() => {
   mocks.stat.mockResolvedValue({ size: 200 });
   mocks.gif.mockResolvedValue(undefined);
   mocks.unlink.mockResolvedValue(undefined);
+  mocks.sharePack.mockResolvedValue('/session/share-pack');
+  mocks.socialCards.mockResolvedValue(['/session/story-card.png']);
 });
 
 const options = { framesDir: '/session/frames', outputDir: '/session', targetMs: 1000 };
@@ -41,6 +49,7 @@ describe('desktop export pipeline', () => {
       outputPath: '/session/progresscut.gif',
       gifPath: '/session/progresscut.gif',
       fileSizeBytes: 200,
+      sharePackPath: '/session/share-pack',
     });
     expect(mocks.unlink).toHaveBeenCalledWith('/session/progresscut.mp4');
     expect(events.filter((event) => event.type === 'session:done')).toHaveLength(1);
@@ -54,6 +63,18 @@ describe('desktop export pipeline', () => {
     expect(mocks.unlink).not.toHaveBeenCalled();
   });
 
+  it('runs successful cleanup before announcing a completed session', async () => {
+    const order: string[] = [];
+    await runPipeline(
+      options,
+      (event) => order.push(event.type),
+      async () => {
+        order.push('cleanup');
+      },
+    );
+    expect(order.indexOf('cleanup')).toBeLessThan(order.indexOf('session:done'));
+  });
+
   it('emits one completion during re-render, including the actual observation count', async () => {
     const events: SessionEvent[] = [];
     rerenderSession(options, (event) => events.push(event));
@@ -63,12 +84,15 @@ describe('desktop export pipeline', () => {
     expect(events.at(-1)).toMatchObject({ type: 'session:done', totalObservations: 1 });
   });
 
-  it('retains the intermediate video and emits an error when GIF conversion fails', async () => {
+  it('retains the intermediate video and rejects when GIF conversion fails', async () => {
     mocks.gif.mockRejectedValue(new Error('encoding failed'));
     const events: SessionEvent[] = [];
-    await runPipeline({ ...options, outputFormat: 'gif' }, (event) => events.push(event));
+    await expect(
+      runPipeline({ ...options, outputFormat: 'gif' }, (event) => events.push(event)),
+    ).rejects.toThrow('encoding failed');
     expect(events.some((event) => event.type === 'pipeline:error')).toBe(true);
     expect(events.some((event) => event.type === 'pipeline:result')).toBe(false);
+    expect(events.some((event) => event.type === 'session:done')).toBe(false);
     expect(mocks.unlink).not.toHaveBeenCalled();
   });
 });

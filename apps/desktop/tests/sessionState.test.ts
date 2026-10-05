@@ -12,6 +12,7 @@ const entry: HistoryEntry = {
   observations: 10,
   meaningfulChanges: 4,
   selectedMoments: 2,
+  excludedFrameIds: [],
   thumbnails: ['/frame.png'],
   mp4Path: '',
   gifPath: '/session/story.gif',

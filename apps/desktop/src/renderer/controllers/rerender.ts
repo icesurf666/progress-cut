@@ -17,7 +17,7 @@ export function createRerenderController(
     button.disabled = false;
     button.innerHTML = 'Re-render <span>↻</span>';
   };
-  button.addEventListener('click', () => {
+  const render = (): void => {
     if (!state.framesDirectory || !state.outputDirectory || state.phase !== 'done') return;
     button.disabled = true;
     button.textContent = 'Generating…';
@@ -28,7 +28,9 @@ export function createRerenderController(
       targetMs: duration.value() * 1000,
       outputFormat: format(),
       recordingDurationMs: state.recordingDurationMs,
+      excludedFrameIds: [...state.excludedFrameIds],
     });
-  });
-  return { reset, setDuration: duration.setValue };
+  };
+  button.addEventListener('click', render);
+  return { reset, setDuration: duration.setValue, applyReview: render };
 }

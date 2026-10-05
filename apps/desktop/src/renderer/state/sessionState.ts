@@ -13,6 +13,7 @@ export class SessionState {
   selectedMoments = 0;
   recordingDurationMs = 0;
   readonly exports = new Map<string, PipelineResult>();
+  readonly excludedFrameIds = new Set<string>();
 
   beginCapture(): void {
     this.clearExports();
@@ -22,10 +23,16 @@ export class SessionState {
     this.selectedMoments = 0;
     this.recordingDurationMs = 0;
     this.activeHistoryId = '';
+    this.excludedFrameIds.clear();
   }
 
   clearExports(): void {
     this.exports.clear();
+  }
+
+  toggleExcludedFrame(frameId: string): void {
+    if (this.excludedFrameIds.has(frameId)) this.excludedFrameIds.delete(frameId);
+    else this.excludedFrameIds.add(frameId);
   }
 
   acceptResult(result: PipelineResult): void {
@@ -42,6 +49,8 @@ export class SessionState {
     this.meaningfulChanges = entry.meaningfulChanges;
     this.selectedMoments = entry.selectedMoments;
     this.activeHistoryId = entry.id;
+    this.excludedFrameIds.clear();
+    entry.excludedFrameIds.forEach((frameId) => this.excludedFrameIds.add(frameId));
     this.clearExports();
     const outputPath = entry.mp4Path || entry.gifPath;
     if (outputPath)
@@ -69,6 +78,7 @@ export class SessionState {
       observations: this.observations,
       meaningfulChanges: this.meaningfulChanges,
       selectedMoments: this.selectedMoments,
+      excludedFrameIds: [...this.excludedFrameIds],
       thumbnails: result?.thumbnails ?? [],
       mp4Path: result?.outputPath.endsWith('.mp4') ? result.outputPath : '',
       gifPath: result?.gifPath ?? '',

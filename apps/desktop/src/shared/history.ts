@@ -1,4 +1,4 @@
-export const HISTORY_VERSION = 1;
+export const HISTORY_VERSION = 2;
 
 export interface HistoryEntry {
   version: number;
@@ -10,6 +10,7 @@ export interface HistoryEntry {
   observations: number;
   meaningfulChanges: number;
   selectedMoments: number;
+  excludedFrameIds: string[];
   thumbnails: string[];
   mp4Path: string;
   gifPath: string;

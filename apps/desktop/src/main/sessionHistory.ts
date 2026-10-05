@@ -21,10 +21,14 @@ function migrateEntry(raw: unknown): HistoryEntry | null {
     createdAt: typeof r['createdAt'] === 'number' ? r['createdAt'] : Date.now(),
     outputDir: r['outputDir'],
     framesDir: typeof r['framesDir'] === 'string' ? r['framesDir'] : '',
-    recordingDurationMs: typeof r['recordingDurationMs'] === 'number' ? r['recordingDurationMs'] : 0,
+    recordingDurationMs:
+      typeof r['recordingDurationMs'] === 'number' ? r['recordingDurationMs'] : 0,
     observations: typeof r['observations'] === 'number' ? r['observations'] : 0,
     meaningfulChanges: typeof r['meaningfulChanges'] === 'number' ? r['meaningfulChanges'] : 0,
     selectedMoments: typeof r['selectedMoments'] === 'number' ? r['selectedMoments'] : 0,
+    excludedFrameIds: Array.isArray(r['excludedFrameIds'])
+      ? r['excludedFrameIds'].filter((id): id is string => typeof id === 'string')
+      : [],
     thumbnails: Array.isArray(r['thumbnails'])
       ? r['thumbnails'].filter((t): t is string => typeof t === 'string')
       : [],

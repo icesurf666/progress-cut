@@ -14,6 +14,13 @@ export interface RerenderOptions {
   targetMs: number;
   outputFormat?: OutputFormat;
   recordingDurationMs?: number;
+  excludedFrameIds?: readonly string[];
+}
+
+export interface StoryMomentPreview {
+  frameId: string;
+  sourcePath: string;
+  timestampMs: number;
 }
 
 export interface PipelineResult {
@@ -25,6 +32,9 @@ export interface PipelineResult {
   thumbnails: string[];
   meaningfulChanges: number;
   selectedMoments: number;
+  storyLabPath?: string;
+  sharePackPath?: string;
+  storyMoments?: readonly StoryMomentPreview[];
 }
 
 export type SessionEvent =
