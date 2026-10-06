@@ -1,0 +1,2 @@
+kaggle-benchmarks @ git+https://github.com/Kaggle/kaggle-benchmarks.git@ci
+pandas>=2.2

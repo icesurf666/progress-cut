@@ -1,0 +1,10 @@
+.env
+.venv/
+.venv-kaggle/
+__pycache__/
+*.run.json
+*.atif.json
+*.result.json
+*.task.json
+kaggle_benchmarks_reference.md
+results/
