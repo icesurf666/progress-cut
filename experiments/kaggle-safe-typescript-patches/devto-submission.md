@@ -83,4 +83,4 @@ The public benchmark leaderboard is here: [Architecture-Aware TypeScript Code Re
 
 The underlying public task is [Safe TypeScript Change Review](https://www.kaggle.com/benchmarks/tasks/pavelkazantsev7776/safe-typescript-change-review-benchmark/1).
 
-The benchmark source and a local Markdown report generator are open source in the [ProgressCut repository](https://github.com/icesurf666/progress-cut/tree/main/experiments/kaggle-safe-typescript-patches).
+Take the rules, paired good/bad diffs, and reusable review prompt from the open-source [Architecture Review Kit](https://github.com/icesurf666/ai-review-architecture-kit). The Kaggle task implementation remains in the [ProgressCut repository](https://github.com/icesurf666/progress-cut/tree/main/experiments/kaggle-safe-typescript-patches).
