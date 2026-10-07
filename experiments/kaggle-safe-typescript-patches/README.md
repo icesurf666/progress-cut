@@ -8,7 +8,9 @@ The task returns the mean of three deterministic checks per case:
 
 1. `decision` — approve or block;
 2. `rule_id` — the exact violated invariant; approved changes must return `none`;
-3. `evidence` — a non-empty explanation grounded in the diff.
+3. `evidence` — a non-empty explanation. The v1 scorer checks presence and
+   length; it does not independently verify that the explanation is grounded in
+   the diff.
 
 The 13 fixtures are intentionally small and synthetic. They encode constraints
 used by ProgressCut but are not copied from unreleased product work. Each

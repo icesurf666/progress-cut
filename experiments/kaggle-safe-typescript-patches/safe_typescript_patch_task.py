@@ -129,13 +129,13 @@ Proposed change for {case_id}:
     review = llm.prompt(prompt, schema=Review)
     decision_ok = normalize(review.decision) == normalize(decision)
     rule_ok = normalize(review.rule_id) == normalize(rule_id)
-    evidence_ok = len(review.evidence.strip()) >= 12
+    explanation_present = len(review.evidence.strip()) >= 12
     return {
         "case_id": case_id,
-        "score": (decision_ok + rule_ok + evidence_ok) / 3,
+        "score": (decision_ok + rule_ok + explanation_present) / 3,
         "decision_ok": decision_ok,
         "rule_ok": rule_ok,
-        "evidence_ok": evidence_ok,
+        "explanation_present": explanation_present,
         "model_decision": review.decision,
         "model_rule_id": review.rule_id,
     }
